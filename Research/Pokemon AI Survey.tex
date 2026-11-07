@@ -1,0 +1,1315 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}   % \toprule \midrule \bottomrule
+\usepackage{array}      % p{} columns behave properly
+\usepackage{url}        % \url{} in the bibliography
+
+%  Float placement 
+% Without these, LaTeX queues tables up and dumps them at the end of the
+% document. They let it put more floats per page and accept pages that are
+% mostly float.
+\setcounter{topnumber}{3}            % up to 3 floats at the top of a page
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}          % up to 4 floats on one page
+\renewcommand{\topfraction}{0.9}     % a float may take 90% of the page top
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.07}   % a page needs only 7% real text
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dbltopfraction}{0.9}       % same, for full-width (table*) floats
+\renewcommand{\dblfloatpagefraction}{0.7}
+% 
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+
+\begin{document}
+
+\title{The state of ML in Pokémon: the benefits of a bring predictor\\
+}
+
+\author{\IEEEauthorblockN{José Ignacio Madriz Ortiz}
+\IEEEauthorblockN{Sergio Andrés Zúñiga Castillo}\\
+\text{Instituto Tecnológico de Costa Rica}\\
+\text{Escuela de Computación}
+
+}
+
+
+\maketitle
+
+
+\begin{abstract}
+\textbf{Every competitive Pok\'emon VGC match opens with Team Preview, where both
+players see each other's six-Pok\'emon teams and simultaneously commit four of
+their own, two of which will lead. The choice is small enough to enumerate: 90 alternatives per player, yet it constrains every turn that follows. This article reviews fourteen works on machine learning for competitive Pok\'emon
+and adjacent domains and finds the decision effectively unmeasured: most agents
+run in formats where it does not exist, the one benchmark that models it folds
+it into the battle policy's action space without isolating its contribution,
+and the only system reporting a Team Preview component publishes no result for
+it. We organise the literature along three axes: the problem domain,
+reinforcement-learning technique, and the available environments and data, and build a methodology from it. The bring is formalised as a two-step finite-horizon Markov Decision Process over the 90 alternatives with a sparse
+terminal reward, to be trained offline on human battle logs. Direct measurement
+of one Regulation~M-A log set finds 84.1\% of recorded brings complete, with
+disclosure correlated to the outcome, so supervision is posed as a partial-label
+problem instead of being filtered. Success is defined as clearing the 55\% win
+rate at which the balance literature classifies a strategy as dominant.}
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+Pokémon VGC, Reinforcement Learning, Artificial Intelligence, Meta game, Pokémon Bring
+
+\end{IEEEkeywords}
+
+
+\section{Introduction}
+In recent years, Artificial Intelligence has become an increasingly relevant subject of study, leading to many branching investigations across different areas ranging from medical assistants, evaluation tools, every-day tasks, and, of course, games. The many different genres and styles across board games, video games, and other game theory problems lead to a variety of AI solutions among these \cite{hu2024}. One of these popular video games in question is Pokémon. \textbf{Pokémon} is a series of creature-collector role-playing games centered around the \textbf{turn-based battles} that such creatures participate in. For a long time, a competitive scene has existed for this franchise, called Pokémon Video Game Championship (VGC), which has gained increasing popularity in recent years. With such a rise, and thanks to its mechanically simple turn-based combat but ever increasing meta-game, it has become a popular subject in the AI for gaming community \cite{hu2024}. \\
+
+A Pokémon battle in the official VGC format consists of 2 teams, both with 6 Pokémon, but only 4 of which are sent into each battle.  Every Pokémon has 1 or 2 types, 4 moves, 1 ability, 1 item, a distribution of points among 6 statistics, and a nature (also called stat alignments) \cite{vgchandbook}. This alone, depending on the version of the format, leads to $\sim10^{139}$ (or $\sim10^{215}$ in bigger formats) \cite{karten2026} possible team combinations per player. That, plus the possible per-turn branching ( $\sim10^{12}$ possible outcomes),  $\sim10^{622}$ possible battle states, and a continuously evolving metagame, make Pokémon VGC a non-trivial domain worth analyzing \cite{angliss2026,karten2026} .\\ 
+
+The present research aims towards analyzing and creating an AI algorithm capable of predicting the \textbf{bring} (the 4 Pokémon bring, including the first 2 to lead) of the enemy team and answering with one of the best possible brings. This seemingly simple process's complexity was best explained by Reis et al. as a "system governed by interdependence task model: knowing how to play is needed for good unit selection, as knowing what units are the most probable to be used affects the game itself" \cite{reis2021}; creating a more complicated Rock-Paper-Scissors situation, one bring may defeat another and so on. This sub-problem of a Pokémon battle is part of the arguably most important turn in an average match and drastically affects the outcome of a battle. Thankfully, it is explicit and countable, presenting \textbf{90 possible bring decisions per player} ($C(6,2) * C(4,2)$) \cite{angliss2026}.\\
+
+AI applications for Pokémon VGC have progressed in 4 distinct ways: 1. Early work showed that reinforcement learning could acquire core battle concepts such as type advantage and beneficial switching without prior domain knowledge \cite{simoes2020}. 2. Self-play policy optimization later reached a Glicko-1 rating (rating of a user's performance on an online ladder) of 1677, approximately 72\% GXE (chance of winning against a random opponent from the ladder) against the best humans' 74\% to 90\% GXE\cite{grigsby2025}, at modest computational cost \cite{huang2019}. 3. More recently, offline reinforcement learning on large sequence models achieved 64–80\% GXE against human opponents, placing the agent within the top 10\%  of active players without any explicit search \cite{grigsby2025}, 4. While search-based agents combining Monte Carlo Tree Search with opponent set prediction exceeded 80\% GXE in Generation 9 OU (a format featuring over used and centralizing Pokémon) \cite{karten2026}. Given this maturity, we treat the battle policy as a reusable component rather than a contribution from this research, following \cite{reis2024} and \cite{reis2025}, which both fix an existing battle agent in order to study the surrounding decision problems. Although, the mentioned solutions are for the singles battle format, not the official VGC rules which are double battles. For the VGC rules, the best approach found was VGC-Bench as a way to measure our own model's success. \\
+
+What has \textbf{not been solved yet} is a reliable way of determining the enemy bring and one of the best possible answers. As Table~\ref{tab:bring} shows, in most of the reviewed systems the decision does not arise at all: the environment provides two Pok\'emon per side
+\cite{simoes2020}, or the format is singles, where all six Pok\'emon are
+available in every battle \cite{huang2019, grigsby2025, karten2026}. The only
+system that operates on the decision is VGC-Bench, which offers two
+alternatives selectable by configuration: substituting a random bring, or
+unifying the opening choice into the battle policy's action space as two joint
+switch-in actions \cite{angliss2026}. Neither alternative predicts the
+opponent's bring nor optimizes a response to it, and neither is accompanied by
+a metric isolating the contribution of that choice. The single exception among the works reviewed here is Rodriguez et al. \cite{rodriguez2024}, whose decision-support tool reports a Team Preview
+recommendation produced by what the authors describe as ``the comprehensive
+genetic algorithm for the team preview''. That phrase appears exactly once, in
+a list enumerating the output tags of the tool's analysis module. The algorithm
+itself is never specified: the paper provides no representation, no fitness
+function, no training procedure and no evaluation of that component, and
+reports no result attributable to it. To the best of our knowledge this is the
+entire published record of an attempt to optimize the bring decision
+deliberately, rather than to absorb it into a battle policy. The gap is
+therefore not one of interest but of measurement: the decision is acknowledged
+as consequential \cite{reis2021, angliss2026}, it is made by deployed agents
+\cite{angliss2026}, and it has never been isolated, optimized as an objective
+in its own right, or reported against any metric.\\
+This document revises the current state of the art in the domains adjacent to the problem, ways to approach it with reinforcement learning, the datasets to use and a detailed explanation on the proposed methodology for the project. 
+
+\subsection{Research Question}
+Can a reinforcement-learning policy, given both full 6-Pokémon teams at Team Preview in a VGC-adjacent fixed-team format, select a bring (4 of 6 with a designated lead pair) that achieves a win rate of at least 55\% against a population-usage baseline, over 1000 battles per team pair played in both directions with an identical fixed battle policy on both sides? 
+\subsection{Hypothesis}
+A reinforcement-learning policy trained on human Team Preview decisions will select brings that win at least 55\% of battles against a population-usage baseline under an identical fixed battle policy. 
+\subsection{Objectives}
+\begin{itemize}
+\item Formalize the Team Preview decision as a Markov Decision Process over
+the 90 legal brings, specifying the state space, the action space, the
+transition dynamics and a justified reward function.
+\item Implement a reinforcement-learning policy that, given both team sheets,
+estimates the opponent's likely bring and selects a response from the 90
+alternatives.
+\item Define and justify an evaluation protocol that captures both the
+immediate matchup advantage and the final battle outcome, and apply it to
+compare the policy against a population-usage baseline at the 55\% threshold.
+\end{itemize}
+
+\subsection{Literature Gaps and Value of our Investigation}
+
+Pok\'emon VGC, as an investigation environment, can be tackled from many
+distinct angles within AI fields \cite{hu2024}. This is proven by the many
+papers investigating possible implementations on the different parts of the
+game, such as battling \cite{simoes2020, huang2019, grigsby2025, karten2026} or
+team-building \cite{reis2024}. To effectively create developments in these
+areas, the environments have to be reduced to a manageable search space, which
+leads to other aspects of the game being left out by researchers: simplified
+simulators isolate a single learning objective \cite{simoes2020}, team building
+is declared out of scope \cite{angliss2026}, and the battle policy is frozen so
+that the surrounding decisions can be studied \cite{reis2024, reis2025}.
+
+Even if team-building and battling are arguably the two most important pillars
+of VGC, there is one middle step that can have a significant impact on the
+outcome of a specific match: analyzing your enemy's team and deciding your
+bring. Reis et al. place precisely this step between team building and the
+battle itself, as a dedicated Selection Phase \cite{reis2021}. This process as a
+whole is often referred to as \textbf{Team Preview}, and occurs just before a
+match begins \cite{vgchandbook}. A bad guess on Team Preview can bring a whole
+competitive strategy to the ground, undermining the value of battling and
+team-building; Angliss et al. observe that this single decision ``can
+drastically alter the dynamics of the battle'' \cite{angliss2026}.
+
+Despite this, the step is routinely set aside. Many battling agents operate in
+formats where it does not exist at all \cite{simoes2020, huang2019,
+grigsby2025}, and the one benchmark that does model it offers a configuration
+that replaces the bring with a random selection in order to encourage
+exploration during training \cite{angliss2026}. Whether battle skill can
+compensate for a poor bring has never been measured. Nevertheless, in the
+process of creating a complete AI environment for the scene, it is important to
+have mastered every aspect of it, particularly given that selection and
+battling are mutually dependent \cite{reis2021}.
+
+The value of our investigation is inherent from this: the crucial opening
+decision, informally known among players as ``Turn 0'', has not been isolated,
+optimized as an objective in its own right, or reported against any metric. Our
+aim is to create an algorithm capable of analyzing the meta-game and both
+teams' strengths and weaknesses, and coming up with a suitable answer based on
+that reasoning. If the investigation reaches a desirable outcome, it could also
+contribute to more robust battling or team-building algorithms; Angliss et al.
+note that a strong VGC agent could supply a reward signal for searching the team
+configuration space \cite{angliss2026}.
+
+\emph{Quick note on scope:} The following fall explicitly outside the scope of this work
+\begin{itemize}
+\item {Team building.} Constructing six Pok\'emon from a space of
+approximately $10^{139}$ configurations \cite{angliss2026} is left open, as it
+is in \cite{angliss2026} and \cite{reis2021}. Teams are treated as given.
+\item{Training a battle policy.} Existing agents are reused
+\cite{grigsby2025, angliss2026, karten2026}, following the same design choice
+made in \cite{reis2024} and \cite{reis2025}.
+\item{Metagame and rules balance} \cite{reis2021, reis2024, reis2025, hu2024}.
+\item{Large language model approaches}, which \cite{karten2026} and
+\cite{grigsby2025} report as uncompetitive over long horizons in this domain.
+\item{Superhuman play.} Following \cite{li2025} and \cite{rodriguez2024},
+the target is decision support for a human player.
+\end{itemize}
+\section{Related works}
+
+The reviewed literature is organized along three axes: the problem domain,
+covering competitive Pok\'emon and specifically the selection of a bring at
+Team Preview; the techniques associated with a reinforcement-learning approach;
+and the datasets and simulation environments available for this domain.
+Following the survey methodology described by Hu et al. \cite{hu2024}, works
+were collected from Google Scholar and the various tools provided by Instituto Tecnológico de Costa Rica's digital library using the search terms such as "Pokémon VGC", "Reinforcement Learning in video games", "meta-game analysis" or "Pokémon AI battles", additionally, the AI tool Consensus helped in finding certain related papers under different keywords. Research was restricted to works published between 2019 and 2026, with the exception of one paper \cite{galway2008}, and complemented by backward citation chasing from the VGC AI Competition literature and by direct consultation with a competitive VGC practitioner active in AI research. Works were included when they addressed Pok\'emon as an application domain, a reinforcement-learning or evolutionary technique applicable to sequential decision-making under partial information, or a simulation environment or dataset for competitive Pok\'emon;
+meanwhile others were excluded when they provided no relevant new information and had older publication dates. Table~\ref{tab:related} summarizes the resulting
+set along the dimensions required for comparison, and Table~\ref{tab:bring}
+details how each reviewed system treats the Team Preview decision in
+particular. The three axis of this investigation are developed in the upcoming subsections.
+
+% Include: Reference, year, technique, enviorments, main metric, reported result, identified limitation
+To better understand the scope and relevance of each of the consulted papers, Table-\ref{tab:related} compares them in categories based on what they did, where they did it, how they measured the results, what the results were and limitations regarding further investigation.
+\begin{table*}[!t]
+\centering
+\caption{Comparison of related work on machine learning for competitive Pok\'emon and adjacent domains.}
+\label{tab:related}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{1.4cm}p{0.5cm}p{3.0cm}p{2.8cm}p{2.0cm}p{3.5cm}p{3.3cm}@{}}
+\toprule
+\textbf{Ref.} & \textbf{Year} & \textbf{Technique} & \textbf{Dataset / environment} & \textbf{Main metric} & \textbf{Reported result} & \textbf{Identified limitation} \\
+\midrule
+
+Galway \emph{et al.} \cite{galway2008} & 2008 &
+Survey of neural networks, evolutionary computation and RL for game-agent control &
+Academic digital-game research on games before 2008 &
+Survey, no metric &
+Neural network and evolutionary hybridization predominates. Stochastic games give noisy fitness. Pre-initialized populations yield more robust controllers &
+17 years old, predates deep RL, no Pok\'emon mention \\
+\addlinespace
+
+Huang and Lee \cite{huang2019} & 2019 &
+Proximal Policy Optimization with Generalized Advantage Estimation, self-play; actor and critic with 1.33M parameters &
+Pok\'emon Showdown \texttt{gen7randombattle}; 3-team fixed metagame &
+Win/loss vs.\ agents; Glicko-1 on the public ladder &
+612--388 vs.\ a tree-search agent; Glicko-1 1677 ($\approx$72\% GXE); fixed-team specialist wins all 9 matchups (0.555--0.99) but falls to 77/500 in the general format &
+Singles, Gen 7; only 3 hand-picked teams; no Team Preview; shaping constants not ablated \\
+\addlinespace
+
+Sim\~oes \emph{et al.} \cite{simoes2020} & 2020 &
+Deep competitive RL (WPL$_\theta$, GIGA$_\theta$), self-play over 2M episodes; $R = R_d + R_f - R_t$ &
+Pok\'emon Battle Environment (PBE), Gym-compatible; 1 active + 1 benched Pokémon &
+Win rate in a fixed disadvantageous scenario &
+GIGA$_\theta$ 100\% win rate; converges faster than WPL$_\theta$; with all 18 types WPL$_\theta$ fails while GIGA$_\theta$ matches the expert baseline &
+No weather, status, field effects or items; 2 Pok\'emon per side; one hand-built scenario; no bring selection \\
+\addlinespace
+
+Reis \emph{et al.} \cite{reis2021} & 2021 &
+Competition framework (VGC AI Framework; Design Constraint Language) &
+VGC AI engine (151 templates, $\geq$165 moves) &
+No experiment mentioned &
+Defines three tracks and a four-module pipeline including a Selection Phase and a Team Predictor &
+No baseline published for any track; simplified non-Showdown engine \\
+\addlinespace
+
+Hu \emph{et al.} \cite{hu2024} & 2024 &
+Survey, Systematic review and taxonomy (2016 - 2024) &
+40 games, 20 platforms, 26 design environments &
+Survey, no metric &
+Pok\'emon VGC listed as an AI testbed and as one of three platforms for game tuning and balance &
+One paragraph on Pok\'emon, no metrics; predates Metamon, VGC-Bench and Pok\'eAgent \\
+\addlinespace
+
+Li and Wellman \cite{liwellman2024} & 2024 &
+Meta-game evaluation via bootstrapped empirical games; Gumbel Information-Set Monte-Carlo Tree Search &
+Deal-or-No-Deal negotiation; 17 MARL algorithms $\times$ 10 seeds &
+NE-Regret, uniform score, NE-NBS, best-response graphs & The best method combines search during both training and evaluation. Agents trained by self-play show signs of having over-fitted to themselves &
+Small negotiation domain, not Pok\'emon; requires a full cross-play payoff matrix; no evolutionary method evaluated \\
+\addlinespace
+
+Reis \emph{et al.} \cite{reis2024} & 2024 &
+Two agents compete: one builds teams to maximise win rate, the other retunes Pok\'emon attributes to restore variety. Builders use game theory and evolutionary search &
+VGC AI Framework; 3-Pok\'emon teams; 1M simulated matches; fixed Minimax battle policy &
+Win-prediction accuracy; agent ranking &
+The win predictor reaches 85.4\% accuracy on unseen team pairs. The strongest builder, Meta Counter, beats every other builder and wins the simulated championship &
+Synthetic simplified environment, no human data; team building rather than the bring decision; results vary widely between runs \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\begin{table*}[!t]
+\centering
+% Shares the number of the table above: \addtocounter cancels the step
+% that \caption performs, so this prints as "TABLE I (continued)" and the
+% next float in the document is still TABLE II. No \label here on purpose.
+\addtocounter{table}{-1}
+\caption{Comparison of related work on machine learning for competitive Pok\'emon and adjacent domains (continued).}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{1.4cm}p{0.5cm}p{3.0cm}p{2.8cm}p{2.0cm}p{3.5cm}p{3.3cm}@{}}
+\toprule
+\textbf{Ref.} & \textbf{Year} & \textbf{Technique} & \textbf{Dataset / environment} & \textbf{Main metric} & \textbf{Reported result} & \textbf{Identified limitation} \\
+\midrule
+
+Rodriguez \emph{et al.} \cite{rodriguez2024} & 2024 &
+Compares two ways of training the same agent: Double Deep Q-Learning against an evolutionary algorithm that evolves the network itself (NEAT). Also creates a recommend-move tool to a player &
+Pok\'emon Showdown, VGC 2022 doubles; 8 teams from the 2022 World Championship &
+Accumulated reward; wins and losses per opponent team &
+After 5 days NEAT scores slightly higher than DDQN. DDQN wins 53 of 80 battles; NEAT wins 204 of 480 &
+No baselines, seeds or confidence intervals; reward never formally specified; comparison acknowledged as unfair; only 10 battles per team \\
+\addlinespace
+
+Grigsby \emph{et al.} \cite{grigsby2025} & 2025 &
+Large Transformer models (up to 200M parameters) trained human battles, improved with self-play data. Uses memory of the current battle, no simulating future turns &
+Showdown Gen 1--4 OU; 475k reconstructed battles, 950k trajectories, 38M steps &
+GXE (chance of beating a random ladder opponent); Glicko-1 &
+64--80\% GXE against human players, placing it in the top 10\% of the ladder; peaked at rank \#31 globally in Gen 1 OU &
+Singles only, no doubles or VGC; no Team Preview by design; no team building or bring decision \\
+\addlinespace
+
+Reis \emph{et al.} \cite{reis2025} & 2025 &
+A genetic algorithm tunes the game's rule parameters. Each candidate set of rules is scored by having a fixed tree-search agent play battles under them &
+VGC AI Competition 2.0; 3-Pok\'emon teams; generated team pairs &
+How close move usage gets to a target rate &
+Converges in 7--25 generations. The tuned rules score 0.88--0.98 against 0.72--0.94 for the official human-set parameters &
+Optimises rules, not selection; win rate left out of the fitness, producing extreme values (authors' caveat) \\
+\addlinespace
+
+Li \emph{et al.} \cite{li2025} & 2025 &
+Review of multi-agent RL in video games; proposes five dimensions for rating how hard a game is to learn &
+Sports, FPS, RTS and MOBA games (StarCraft~II, Dota~2, GRF) &
+Survey, no metric &
+Rates difficulty by observability, state space, action space, reward sparsity and number of agents. Documents the gap between academic RL and shipped game AI &
+No Pok\'emon and no turn-based simultaneous-move games; nothing on pre-game selection or drafting \\
+\addlinespace
+
+Oblander \cite{oblander2025} & 2025 &
+Neural network that maps each 6-Pok\'emon team to a vector, then predicts the winner from the two vectors. Corrects for player skill &
+Showdown ranked VGC; 11\,738\,418 matches, 400\,009 players, 702 Pok\'emon &
+Prediction accuracy; AUC &
+66.43\% accuracy predicting the winner from both teams, against 65.54\% using player skill alone. Players base 59.3\% of their team choice on what is popular &
+Models the 6-Pok\'emon team, never the 4 brought; unordered sets \\
+\addlinespace
+
+Angliss \emph{et al.} \cite{angliss2026} & 2026 &
+Agents trained by copying human play, then improved by playing against themselves and against a growing pool of opponents &
+VGC-Bench: Showdown VGC doubles, Open Team Sheets, PettingZoo; 700k+ human battle logs &
+Win rate against each other; exploitability; performance on unseen teams &
+An agent trained on one team beats agents trained on many (about 70\% win rate) but generalises worse. A purpose-built counter-strategy beats any of them almost always. Beat an intermediate human 5/5 and an advanced human 2/5 &
+Team building out of scope; near-total exploitability; Open Team Sheets imply near-full information; only 5 games per human evaluation \\
+\addlinespace
+
+Karten \emph{et al.} \cite{karten2026} & 2026 &
+Benchmark comparing heuristic agents, RL agents, language-model agents and tree search on a shared server &
+Pok\'eAgent Challenge (Showdown Gen 1 and Gen 9 OU); 4M human and 18M self-play trajectories; 200k+ teams &
+GXE; Glicko-1; a full-history rating that is less noisy for small agent pools &
+The tree-search agent Foul Play exceeds 80\% GXE in Gen 9 OU and won its track 50--14. RL agents beat language-model agents &
+Singles-focused; no standalone bring or lead metric; ratings noisy without large samples; metagame drift \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+\subsection{Problem and domain}
+The A axis refers to the scope of the problem and the domains it is part of. How has the problem of selecting a suitable bring to a Pokémon VGC match been handled by similar research, which domains of research are relevant for this investigation and what has been solved or what has not been investigated as in depth.  
+\subsubsection{How has this problem been handled previously?}
+
+The bring decision is a problem often overlooked, avoided, or not dealt with as a problem due to format differences or design decisions. The Table-\ref{tab:bring} shows how the previous AI models have had to deal with, if at all, with this particular problem.
+
+%Handling of bring decision on the papers
+\begin{table*}[!t]
+\centering
+\caption{Treatment of the Team Preview (bring) decision across the reviewed AI models or experiments.}
+\label{tab:bring}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}p{3.3cm}p{1.6cm}p{3.4cm}p{8.2cm}@{}}
+\toprule
+\textbf{System} & \textbf{Ref.} & \textbf{Format} & \textbf{Treatment of the bring decision} \\
+\midrule
+GIGA$_\theta$, WPL$_\theta$ & \cite{simoes2020} & PBE (1 active + 1 benched) & No decision taken: Only two Pokémon per team, set leads.\\
+\addlinespace
+RL-rb, RL-meta & \cite{huang2019} & Showdown Gen 7  random singles; 3 fixed teams& No decision taken: in singles all six Pok\'emon are usable in every battle. Team Preview is never mentioned and lead is forced random.\\
+\addlinespace
+Metamon (IL, RL, SynRL) & \cite{grigsby2025} & Showdown Gen 1--4 OU singles & Absent by design: these generations predate Team Preview, and team order is fixed when the team is built. \\
+\addlinespace
+Foul Play & \cite{karten2026} & Showdown Gen 9 OU singles & No four-of-six choice, since singles brings all six. Performs opponent \emph{set} prediction (hidden moves and items), which is opponent modelling rather than bring prediction. \\
+\addlinespace
+PA-Agent & \cite{karten2026} & Showdown Gen 1 OU singles & No bring decision necessary. Picks a team from a candidate pool by tournament selection against 50+ line-ups, retaining those above a 60\% win rate.\\
+\addlinespace
+VGC-Bench agents (BC, BCSP, BCFP, BCDO, PPO) & \cite{angliss2026} & Showdown VGC doubles, Open Team Sheets & \textbf{Considered, but made part of the battle policy}: Team Preview is unified into the action space as two joint switch-in actions, without a distinct representation and without any reported metric isolating its contribution. A configuration toggle replaces the bring with a random selection.\\
+\addlinespace
+State-space analysis only & \cite{karten2026} & Gen 9 VGC & The Battling Track is singles, and VGC appears only in a complexity table.\\
+\addlinespace
+DDQN, NEAT, and an unnamed genetic algorithm & \cite{rodriguez2024} & Showdown VGC 2022 doubles & A genetic algorithm is reported to produce a Team Preview recommendation, but no further explanation about that specific module is given.\\
+\addlinespace
+Team builders (Individual Pok\'emon Counter, Minimax Builder, Meta Counter) & \cite{reis2024} & VGC AI Framework, three-Pok\'emon teams from a roster & No bring: these agents build teams from a roster. The Selection Phase is not implemented, and battling uses a fixed Minimax policy rather than a learned one.\\
+\addlinespace
+Tree-search agent with a PyGAD balance agent & \cite{reis2025} & VGC AI Competition 2.0 & No bring: the genetic algorithm optimises rule parameters rather than selection. \\
+\addlinespace
+Selection Phase (specification only) & \cite{reis2021} & VGC AI Framework & Defined as a task (predict the opponent's units, then choose the sub-team that answers them) but implements no agent and no baseline.\\
+\addlinespace
+Bilinear matchup model & \cite{oblander2025} & Showdown ranked VGC & Not an agent rather, it models the choice of the six Pok\'emon team as an unordered set, never the four brought.\\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+Summarizing \ref{tab:bring}, the three relevant mentions on a Team Preview algorithm are \textbf{1. a genetic algorithm} producing a Team Preview recommendation appears in the tool of Rodriguez et al. \cite{rodriguez2024}, but only as an output of their analysis module; the component is not specified or evaluated anywhere in the paper, and no result is reported for it.\textbf{ 2.} Reis et al. \cite{reis2021} formalize this decision inside a \textbf{dedicated Selection Phase}, consisting of a Team Predictor that estimates the opponent's units and a Selection Policy that chooses a sub-team in response, and characterize it as a one-shot process. The framework provides the architecture but no implementation of either component: the paper reports no experiments, and the authors note that baseline solutions remain to be developed. \textbf{3.} The only one that reports how they actually solve or take on the problem is Angliss et al. \cite{angliss2026}, who simply treat it as \textbf{two joint switch-ins}, a smart way to re-utilize existing logic, but does not confront the problem nor its ramifications directly. 
+
+
+\subsubsection{Related domains}
+The Pokémon VGC bring problem studied here is a version of a pattern common to
+competitive multiplayer games. Reis et al. observe that games with distinct
+mechanics share a phase of pre-game preparation: assembling a deck
+in card games, selecting a fighter in fighting games, or choosing
+units in real-time strategy games, \cite{reis2021} where players may have partial observability on the enemy's options. Hero drafting in MOBAs is another increasingly common version of a similar case, addressed in a limited form by OpenAI Five
+\cite{angliss2026}. In each case a player commits to an initial configuration before
+play begins, under uncertainty about the opponent's choice, and that commitment
+will affect every subsequent decision. This counter-selection aspect has been
+formalized directly: Crane et al. define Team Counter-Selection Games, in which
+candidate selection is shaped by a rotating metagame where each new selection
+creates a counter to the previous one, and apply epistemic reasoning to
+anticipate opposing line-ups and identify the strongest counter candidates,
+evaluated on online Pok\'emon Go leagues \cite{crane2021}. This Rock-Paper-Scissors style of problems is part of the intersection between \textbf{metagame analysis}, which studies how strategy selection evolves in a population of players \cite{reis2024}, and
+empirical \textbf{game-theoretic analysis}, which corresponds to the evaluation of strategies
+whose value depends on the opponents they are measured against
+\cite{liwellman2024}. Pok\'emon VGC is a demanding representative of this
+family: the selection is combinatorial in a space of 90 possible distinct choices \cite{angliss2026}, the opponent's choice is simultaneous
+and hidden, and the environment in which a population of strategies develops shifts over time \cite{hu2024, karten2026}.
+\subsubsection{What has been solved and what is an open question?}
+The two main areas on Pokémon VGC  are battling and team-building, both of which have been explored and solved at different levels of complexity and in distinct formats \cite{simoes2020,huang2019,grigsby2025,karten2026}. It is our exact problem which is still an open question: what to bring, given two teams. This has been addressed by various researchers, but it is not covered in depth, \cite{rodriguez2024, reis2021} or treated as a side effect of learning to battle \cite{angliss2026} and never tested and reported in an isolated environment by itself.  
+
+\subsection{Reinforcement-learning approach techniques}
+\label{sec:rltechniques}
+
+The bring decision is a sequential choice made under uncertainty about a
+simultaneous opponent action, with an outcome observable only after the fact.
+This section reviews the families of methods that have been applied to
+decisions of this shape in competitive Pok\'emon and adjacent domains, the
+assumptions each one carries, and the conditions under which those assumptions
+hold. Since no formal or complete research has been done on this particular aspect of the game, the purpose here is to establish, given the existing literature, why a reinforcement-learning formulation is the appropriate basis
+for the problem posed, and which of its variants the available data and
+computational budget permit. Not all of these were considered for our experiment, but given the survey-like nature of this work, they're all worth including.
+
+\subsubsection{State of methods and tools: strengths, weaknesses, and assumptions}
+\paragraph{Online reinforcement learning through self-play}
+The earliest results in this domain come from agents that learn by playing
+against themselves. Sim\~oes et al. train the competitive algorithms
+WPL$_\theta$ and GIGA$_\theta$ over two million self-play episodes and show
+that type advantage and the value of switching are acquired without any prior
+domain knowledge \cite{simoes2020}; Huang and Lee reach a comparable result with Proximal Policy Optimization, at a reported cost of
+approximately \$91 of computation \cite{huang2019}, and Rodriguez et
+al. apply Double Deep Q-Learning to the VGC doubles format
+\cite{rodriguez2024}. The strength of this family is that it requires no
+labelled data, only an environment to interact with. Its assumption is that
+such interaction is relatively cheap: all three works generate millions of episodes, but
+Sim\~oes et al. report that WPL$_\theta$ fails to learn adequate policies once
+the full eighteen-type environment is used, indicating sensitivity to the
+scale of the interaction budget relative to the complexity of the state space
+\cite{simoes2020}. A second limitation is specialization: Huang and Lee's agent,
+retrained on a fixed set of three teams, wins every matchup in that setting but
+falls to 77 wins in 500 games when returned to the general format
+\cite{huang2019}, a pattern Angliss et al. reproduce at larger scale by finding
+that agents trained on a single team configuration generalize worst across
+unseen ones \cite{angliss2026}. Given the budgetary constraints of this work (\$0.00), and the limitations revealed by previous research, an additional angle other than restricted self-play must be implemented.
+
+\paragraph{Offline reinforcement learning and imitation}
+When there exists a registry of recorded play, an agent can be trained from logged
+trajectories rather than from live interaction. Grigsby et al. reconstruct
+475,000 human battles into trajectories and train sequence
+models on them, reaching 64-80\% GXE against human opponents without any
+search at decision time \cite{grigsby2025}. Angliss et al. report that across their empirical training,
+the variants initialized by behaviour cloning on human play dominate those
+trained from scratch \cite{angliss2026}. The assumption here 
+is the availability of outcome-labelled data, which is precisely the condition
+Angliss et al. establish for the VGC doubles format through their release of
+over 700,000 open team sheet battle logs \cite{angliss2026} (which become the lifeblood of our fitness function). Thanks to that, the interaction cost that constrains the previous family
+disappears, which is why this is the technique that most closely describes our experiment.
+
+\emph{One issue} with the logs, it records the Team Preview information and the battle's turns. In VGC it is possible for a winner to not reveal all 4 brought members or for a loser to forfeit before all 4 of theirs are knocked out. This means not all logs carry complete 4-Pokémon brings, which is addressed in the methodology.
+
+\paragraph{Evolutionary computation and neuroevolution}
+Evolutionary methods have been applied to this class of problem both as
+optimisers of network parameters and as search procedures over discrete
+configurations. Galway et al. report that the hybridisation of neural networks
+with evolutionary methods predominates in academic game research
+\cite{galway2008}, and Rodriguez et al. provide a direct comparison within
+Pok\'emon VGC, evaluating NEAT against DDQN on the same task
+and finding the two comparable in performance \cite{rodriguez2024}. Applied to
+search rather than to training, Reis et al. combine evolutionary search with
+linear programming to construct counter-teams, scoring candidates with a
+neural network trained to predict match outcomes \cite{reis2024}, and later
+employ a genetic algorithm over rule parameters that converges within 7 to 25
+generations \cite{reis2025}. Two constraints emerge from this literature and
+inform the design proposed here. Stochastic
+environments produce noisy fitness evaluations, which require a large number of
+games per candidate before an estimate becomes reliable \cite{galway2008},
+the condition that motivates the learned evaluator of
+Section~\ref{sec:evaluator}. Additionally, excluding win
+rate from their fitness function, which we will do, can drive the optimizer towards degenerate
+parameter values \cite{reis2025}. These search families are more so components that combine with reinforcement learning and the design proposed
+here treats them as a baseline
+rather than as an eligible method.
+
+\paragraph{Search-based methods}
+The strongest battling agents currently rely on explicit search. The Monte
+Carlo Tree Search engine in \cite{karten2026} exceeds 80\% GXE in
+Generation 9 OU, and Reis et al. adopt a
+Minimax agent as a fixed battle policy precisely because it can
+operate under modified rules without retraining \cite{reis2024}. The biggest issue here is, once again, computational cost and time: the expense lies not in simulating a battle once but in evaluating ninety candidate decisions repeatedly, which is the cost a learned evaluator is
+introduced to avoid. However, since our objective here is to clear a win rate percentage, a search-based policy will be useful for the significantly reduced number of simulations we will need to run.
+
+\paragraph{Language-model agents}
+Approaches built on LLMs are excluded based on evidence in the
+literature rather than on principle: specialist agents outperform language-model agents over
+the long horizons characteristic of VGC \cite{karten2026} \cite{grigsby2025}. Additionally, our expert consultation dissuaded us from this since the beginning.
+
+
+This literature has made clear that the choice of algorithm cannot
+be separated from the protocol used to assess it. Performance in multi-agent settings is meaningful only as a distribution
+over random seeds and opponents, and that agents trained by self-play leave
+detectable signs of having over-fitted to themselves \cite{liwellman2024}.
+Angliss et al. measure the corresponding weakness directly in this domain,
+finding agents to be close to fully exploitable by a purpose-built counter
+strategy \cite{angliss2026}. Li et al. add a further consideration, arguing that
+human-like and useful behaviour is frequently a more appropriate target for game
+agents than superhuman performance \cite{li2025}, which aligns with the
+decision-support framing adopted by Rodriguez et al. \cite{rodriguez2024} and
+with the objectives stated in this work.
+
+
+Four properties of the bring decision follow from the preceding review and
+together determine the formulation developed in Section~\ref{sec:mdp}. The
+decision is sequential and made under uncertainty about an opponent's
+simultaneous choice, which is the structure a Markov Decision Process is
+intended to describe. Its action space is small and closed at ninety
+alternatives \cite{angliss2026}, so the scale that constrains self-play
+approaches does not arise. In summary, outcome-labelled data exists for the format
+\cite{angliss2026}, so the policy can be trained offline in the manner of
+\cite{grigsby2025} without the interaction cost that the online family
+requires. And the quantity of interest is a terminal win or loss, which is
+already the reward signal a reinforcement-learning formulation optimises,
+removing the need for the shaped objectives that \cite{simoes2020} and
+\cite{grigsby2025} introduce to address credit assignment across long battles.
+The evolutionary methods reviewed above remain relevant as a search procedure
+over the same space, and are retained in that role.
+\subsection{Dataset and environments}
+% Must conclude an **objective number** with best pub lished result. Reasonable range to expect. Declare which result we wish to reach. Point out protocol differences and other metrics that might result in an unfair comparison. In its defect, look for possible comparisons from similar works
+\label{sec:axisc}
+The third axis concerns the environment in which the decision is actually made
+and the record of play that environment produces. Two questions have to be
+settled before any result of ours can be interpreted: whether a simulator
+exists that poses the decision under study at all, and what the literature has
+already achieved on it. The first has a narrow answer, since only one
+environment qualifies. The second has an inconvenient one: nothing published
+measures the quantity measured here, which changes what a literature baseline
+can be for this work and is treated explicitly below.
+
+\subsubsection{The environment and its published results}
+Most of the reviewed work does not run in an environment where a bring exists.
+Sim\~oes et al. use a battle environment with one active and one benched
+Pok\'emon \cite{simoes2020}; Huang and Lee use Generation~7 random singles
+\cite{huang2019}; Grigsby et al. use Generations~1--4 OU singles and exclude
+Team Preview by design \cite{grigsby2025}; Karten et al. benchmark Generation~1
+and Generation~9 OU, also singles \cite{karten2026}. The VGC AI Framework of
+Reis et al. does contain a Selection Phase, but it runs on a simplified
+non-Showdown engine with three-Pok\'emon teams \cite{reis2021, reis2024,
+reis2025}, so the selection it models is not the four-of-six decision the
+official format defines \cite{vgchandbook}.
+
+Two works run VGC doubles on Pok\'emon Showdown itself: Rodriguez et al., over
+eight teams from the 2022 World Championship \cite{rodriguez2024}, and Angliss
+et al. \cite{angliss2026}. Of the two, only VGC-Bench supplies the four
+properties this work requires at once: doubles under current regulations, an
+Open Team Sheet setting in which both configurations are observable at Team
+Preview and the state of (\ref{eq:posg}) is therefore well defined, a
+representation in which the Team Preview decision is an action rather than an
+assumption, and a released corpus of human play. No other environment in the
+reviewed literature offers that combination, and the choice of VGC-Bench
+follows from its absence elsewhere rather than from preference.
+
+The results published on it, with the protocol that produced them, are as
+follows. Under cross-play at 1000 episodes per matchup, five training seeds and
+a reported error of approximately $\pm 0.03$, a behaviour-cloned agent
+fine-tuned by self-play on a single team defeats the agents trained on 4, 16
+and 64 teams at win rates of 0.699, 0.740 and 0.698. Evaluated instead on 72
+teams held out of training, the ordering inverts: the single-team agent falls
+to 0.405, 0.375 and 0.331, while the 64-team agent reaches 0.669, 0.578 and
+0.564. Nearly every agent is measured as approximately fully exploitable by a
+purpose-trained best response. In human testing the strongest agent won 5 of 5
+against an intermediate player, 2 of 5 against an advanced player, and at least
+one game against a multi-time World Championship competitor and regional
+champion \cite{angliss2026}.
+
+Two things follow. The evaluation protocol adopted in
+Section~\ref{sec:protocol}, (1000 battles per matchup, sides exchanged,
+results as distributions over seeds, team pairs held out) is taken from this
+work rather than invented, because it is the only protocol with published
+numbers on the same simulator. And the spread of those numbers, roughly 0.33 to
+0.74, is the range within which differences in this environment have so far
+been found meaningful. It is the empirical context for the target set out in
+Section~\ref{sec:baseline}.
+
+\subsubsection{The dataset}
+The corpus released with VGC-Bench contains over 700\,000 Open Team Sheet
+battle logs collected from Pok\'emon Showdown \cite{angliss2026}. This work
+uses one file of it, \texttt{logs\_gen9championsvgc2026regma.json}, holding the
+6\,905 battles, and therefore 13\,810 player-brings, played under the
+Regulation~M-A ruleset of the Generation~9 VGC~2026 format.
+
+Restricting to a single regulation is deliberate. A regulation is a legal
+Pok\'emon pool, and therefore a metagame: usage distributions and counter
+relationships are properties of one pool and do not carry across pools. Mixing
+regulations would make the usage-statistics baseline of
+Table~\ref{tab:baselines} an average over populations that never played each
+other, and would corrupt the temporal partition of
+Section~\ref{sec:protocol}, whose purpose is to separate early from late play
+within one metagame rather than to separate one format from another.
+
+Three properties of the registry constrain what may be claimed from it, and each
+is a consequence of how it was collected. The first is that only Open Team
+Sheet battles are retained, because only there can states and actions be
+recovered by replaying the logged transitions \cite{angliss2026}. That is what
+makes the data usable, but it also means the recorded population is the one
+that plays under tournament-style disclosure rather than the ladder at large,
+and the authors themselves list the near-full information this implies as a
+limitation of their setting. The second is a rating floor: the collector reads
+only logs of players above a rating threshold, so the sample is skewed toward
+stronger play. For this work that skew runs in a convenient direction, since
+the object of study is a competent bring rather than an average one, but it
+means any statement made here about how players bring is a statement about
+strong players specifically. The third is that the bring itself is not always
+fully recorded, and is missing in a way that correlates with the outcome; that
+property is measured and handled in Section~\ref{sec:observability}.
+
+Size is a genuine constraint rather than a formality. Spread across a 90-way
+decision, 13\,810 player-brings would average roughly 153 observations per
+alternative if the decision were uniformly distributed, and it is not: usage
+concentrates heavily, so the tail of rare brings is supported by very few
+examples. This is a further reason the partial-label objective of
+(\ref{eq:partial}) retains every record instead of discarding ambiguous ones.
+At this scale the 15.9\% that would be discarded is not affordable, quite apart
+from the bias that discarding them would introduce.
+
+\subsubsection{The absence of a comparable published result}
+Rodriguez et al. is the only reviewed work whose system contains a Team Preview
+component at all: their analysis module emits a recommendation produced by a
+genetic algorithm, printed in the tool's report beside the per-turn move
+recommendation \cite{rodriguez2024}. The evaluation in that paper, however,
+measures the battle agents and only the battle agents. Its results are position
+tables for DDQN and NEAT across eight opponent teams at ten
+interactions each, and its stated conclusion is a claim about battling. No accuracy, win
+rate or degradation is reported for the team-preview component, and it is not
+specified in enough detail to implement. The nearest thing in the literature
+to the problem posed here therefore supplies no number.
+
+What the rest of the field supplies are measurements of adjacent quantities.
+Oblander predicts the winner from two six-Pok\'emon teams at 66.43\% accuracy
+against a 65.54\% skill-only floor \cite{oblander2025}; Reis et al. predict the
+winner of a simulated match at 85.4\% on unseen team pairs \cite{reis2024};
+Grigsby et al. reach 64--80\% GXE as a battle policy \cite{grigsby2025}. None
+of these is the bring. The first two condition on the full six and never on the
+four brought, and the third is a battle policy in a format without a Team
+Preview at all.
+
+This is precisely why the review is met by
+examining analogous datasets. Table~\ref{tab:baselinefigures} sets out those reference points
+together with the specific difference that disqualifies each one. Our position
+is that none of them constitutes a fair comparison and that reporting a result
+against any of them would mislead rather than inform: the quantity, the data
+and the protocol all differ. They are retained as an indication of the
+magnitude of effect that is attainable in this domain, and for nothing further.
+
+\subsubsection{The target adopted in its place}
+\label{sec:baseline}
+Since no published result exists for the quantity measured here, the objective
+number of the research question cannot be inherited from a prior result. It is
+taken instead from the threshold at which this literature declares a strategy
+dominant.
+
+Reis et al. state that threshold explicitly. Among the targets a balance agent
+must satisfy, the Design Constraint Language of the VGC AI Competition sets
+\texttt{MAX\_WIN\_RATE = .55}: a roster is admissible when the maximum win rate
+attainable by any Pok\'emon or team is at most 55\%, the stated purpose being
+to ensure there is ``no single dominant strategy'' \cite{reis2021}. The
+complementary half of the definition appears in the later work, where the
+fitness of a balanced metagame drives the average win-rate array toward
+$w = 0.5, \ldots, 0.5$ \cite{reis2024}. Together the two fix a scale: 50\% is
+what balance looks like, and 55\% is where this literature stops calling a
+strategy balanced and starts calling it dominant.
+
+This work adopts the same number with its role reversed. What a balance agent
+treats as a ceiling to be pushed down, a selection policy treats as a floor to
+be cleared. A bring policy that sustains more than 55\% against the
+population-usage baseline (with the teams themselves fixed and exchanged
+between sides, and every battle played out by a shared fixed policy) has by
+this literature's own criterion produced an advantage that a metagame would
+classify as dominant. That the advantage would arise from selection rather than
+from roster composition is exactly the claim under test.
+
+
+\begin{table}[!t]
+\centering
+\caption{Reference points for the literature baseline.}
+\label{tab:baselinefigures}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}p{2.5cm}p{1.5cm}p{3.4cm}@{}}
+\toprule
+\textbf{Reference point} & \textbf{Value} & \textbf{Why it is not a comparison} \\
+\midrule
+Team Preview component \cite{rodriguez2024} & none reported & The only bring component in the literature; no result published for it \\
+\addlinespace
+Specialist agent, seen teams \cite{angliss2026} & 0.699--0.740 & Battle policy, not selection; same simulator and protocol \\
+\addlinespace
+Generalising agent, 72 unseen teams \cite{angliss2026} & 0.564--0.669 & As above; the range in which effects here are found meaningful \\
+\addlinespace
+Outcome prediction, human data \cite{oblander2025} & 66.43\% acc., 0.730 AUC & Conditions on the six-Pok\'emon team, never on the four brought \\
+\addlinespace
+Outcome prediction, simulated \cite{reis2024} & 85.4\% acc. & Simplified engine, three-Pok\'emon teams, no human play \\
+\addlinespace
+Battle-policy ceiling \cite{grigsby2025} & 64--80\% GXE & Gen 1--4 OU singles; no Team Preview exists in the format \\
+\addlinespace
+Dominance threshold \cite{reis2021} & 55\% & Balance ceiling adopted here as a success floor; see Section~\ref{sec:baseline} \\
+\addlinespace
+Chance floor (this work) & 1.11\% / 6.67\% & Uniform over the 90 brings, or the 15 lead pairs \cite{angliss2026} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\section{Proposed Methodology}
+%Problem description, mathematical formulations if needed. Pipeline, experimental protocol, partitions, validation, metrics, and their justification. Baselines and identification and mitigation of risks. Track C specific: formulate MDP, state space, actions space, enviorment transition dynamic, **justified design of the reward function**
+\begin{table}[!t]
+\centering
+\caption{Planned baselines.}
+\label{tab:baselines}
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}p{2.4cm}p{3.1cm}p{2.0cm}@{}}
+\toprule
+\textbf{Baseline} & \textbf{Description} & \textbf{Expected level} \\
+\midrule
+Random & Uniform choice among the 90 legal bring decisions & 1.11\% exact match; 6.67\% on the lead pair alone \\
+Usage statistics & Predict the most frequent bring for the observed archetype & Non-trivial; humans weight population usage at 59.3\% \cite{oblander2025} \\
+Type heuristic & Greedy type-advantage matching & Reported as sub-optimal \cite{simoes2020} \\
+Search builders & Individual Pok\'emon Counter, Minimax Builder (NE via LP), Meta Counter, adapted to the bring decision & Meta Counter strongest in \cite{reis2024} \\
+Evolutionary search & GA over the 90 candidates with a learned matchup fitness & Converged in 7--25 generations in \cite{reis2025} \\
+Proposed policy & Reinforcement-learning policy over the Team Preview decision & - \\
+\bottomrule
+\end{tabular}
+\end{table}
+\subsection{The problem, abstracted}
+Running the risk of redundancy but for the sake of clarity: following \cite{angliss2026}, a Pok\'emon VGC battle is a two-player
+zero-sum, partially observable, symmetric, stochastic game. Given an open team sheet format, where all the relevant Pokémon specific information (moves, item, stat alignment, ability), is known for both players, take fixed team
+configurations $c_1, c_2$ revealed at Team Preview. The game instance is:
+
+\begin{equation}
+\mathcal{G}(c_1,c_2) = \langle \mathcal{S}, \{\mathcal{O}_i\}, \{\mathcal{A}_i\}, \mathcal{T}, R, c_1, c_2 \rangle ,
+\label{eq:posg}
+\end{equation}
+
+\noindent where $\mathcal{S}$ is the set of battle states, $\mathcal{O}_i \subseteq \mathcal{S}$
+player $i$'s observation, $\mathcal{A}_i$ the action set for the player (switch out, attack, protect, etc.),
+$\mathcal{T}(s' \mid s, a_1, a_2)$ the stochastic transition function (the probability to go into state $s'$ , given the current state $s$ and both players' actions), and
+$R(s_T) \in \{-1, 1\}$ is the terminal reward.
+
+We restrict attention to the Team Preview decision that precedes the battle.
+Each player selects a bring $b_i$ consisting of an unordered pair of leads and an unordered pair of reserves, drawn from their six.
+
+\begin{equation}
+|\mathcal{B}| = \binom{6}{2}\binom{4}{2} = 15 \times 6 = 90 ,
+\label{eq:actionspace}
+\end{equation}
+
+\noindent giving 90 legal bring decisions per player \cite{angliss2026}.
+The learning problem is to find a policy
+$\rho(b_1 \mid c_1, c_2)$ maximising the expected terminal reward when the
+resulting battle is played out by a shared fixed battle policy, thus removing player skill and
+expression from the evaluation.
+
+\subsection{The decision as a Markov Decision Process}
+\label{sec:mdp}
+
+We have made clear the learning objective, and now this section makes the
+decision process behind it explicit. Fixing the opponent's bring policy and
+using a shared battle policy $\pi_b$ for both sides absorbs the opponent into
+the environment, reducing the game $\mathcal{G}(c_1,c_2)$ to a single-agent,
+finite-horizon Markov Decision Process
+$\mathcal{M} = \langle \mathcal{S}_{\mathcal{B}}, \mathcal{A}_{\mathcal{B}}, T_{\mathcal{B}}, R_{\mathcal{B}}, \gamma \rangle$
+with a horizon of two steps. The same device is used by \cite{reis2024} and
+\cite{reis2025}, which fix a battle policy in order to study the decisions
+surrounding it.
+
+\subsubsection{State space}
+A state is the information available at Team Preview,
+\begin{equation}
+s = \langle c_1,\, c_2,\, m,\, \ell \rangle \in \mathcal{S}_{\mathcal{B}},
+\end{equation}
+\noindent where $c_1$ and $c_2$ are the team configurations of
+(\ref{eq:posg}), $m$ is a vector of metagame features derived from usage
+statistics over the training window, and $\ell$ is the lead pair already
+committed, empty at $t=0$. Under open team sheets the state is fully observed
+up to the opponent's concealed stat allocation and their simultaneous bring choice,
+the latter of which the fixed opponent policy makes part of the environment.
+The MDP state is therefore strictly smaller than the battle state
+$\mathcal{S}$: no turn has yet been played.
+
+\subsubsection{Action space}
+The 90 alternatives of (\ref{eq:actionspace}) are selected across the two
+steps, following the factorisation already present in that expression. At
+$t=0$ the agent commits the lead pair,
+$a_0 \in \binom{c_1}{2}$, giving 15 alternatives; at $t=1$ it commits the
+reserves from the four Pok\'emon that remain,
+$a_1 \in \binom{c_1 \setminus a_0}{2}$, giving 6. Their composition is the
+bring, $b_1 = (a_0, a_1)$, and
+$|\mathcal{A}_{\mathcal{B}}| = 15 \times 6 = |\mathcal{B}| = 90$. Factorising
+reduces the per-step branching from 90 to 15 and then 6 without altering the
+set of achievable brings.
+
+\subsubsection{Transition dynamics}
+The first transition is deterministic and records the commitment,
+$T_{\mathcal{B}}(s' \mid s, a_0)$ setting $\ell \leftarrow a_0$ and leaving
+$c_1, c_2, m$ unchanged. The second is stochastic and is realised by playing
+the battle: both brings are submitted to the simulator and the episode is
+executed under $\pi_b$, so that $T_{\mathcal{B}}(\cdot \mid s, a_1)$ is the
+composition of the battle transition $\mathcal{T}$ of (\ref{eq:posg}) over the
+full episode with the fixed policies of both players. Stochasticity enters
+through damage rolls, accuracy checks, secondary effects and speed ties;
+\cite{angliss2026} estimates the per-turn branching factor of VGC at up to
+$10^{12}$. The agent takes no further action once $a_1$ is committed.
+
+\subsubsection{Reward function}
+The reward is sparse and terminal, inheriting $R(s_T)$ from (\ref{eq:posg}):
+\begin{equation}
+R_{\mathcal{B}}(s, a_0) = 0, \qquad
+R_{\mathcal{B}}(s, a_1) = R(s_T) \in \{-1, +1\},
+\end{equation}
+\noindent with $\gamma = 1$, since the horizon is finite and no intermediate
+reward is emitted.
+
+Shaped rewards are common in Pok\'emon because they address credit assignment
+over long battles: \cite{simoes2020} decomposes the signal into damage dealt,
+faints and damage taken so that the value of a switch is visible before the
+battle ends, and \cite{grigsby2025} adds light shaping for damage dealt and
+health recovered on top of win and loss. That motivation does not apply here.
+The episode is two steps long, so the outcome is never more than two decisions
+away and there is no gap for an intermediate signal to bridge.
+
+Shaping would nonetheless introduce a documented risk.  As previously mentioned,
+excluding win rate from the fitness function drove a genetic algorithm
+toward degenerate parameter values\cite{reis2025}, and \cite{karten2026} document reward
+shaping being exploited so that agents bypass intermediate objectives, as well
+as negative rewards inducing policy collapse. A sparse outcome reward is not
+open to these failures, because it measures exactly the quantity the research
+question asks about.
+
+No learned proxy is substituted for $R_{\mathcal{B}}$ in this formulation:
+the policy is trained on outcomes recorded in the data. The role of the learned
+matchup evaluator introduced in Section~\ref{sec:evaluator} is confined to the
+evolutionary baseline, for reasons given there.
+
+\subsection{Observability of the bring in recorded play}
+\label{sec:observability}
+
+The formulation above assumes that a logged battle supplies the bring each
+player selected. The issue raised in Section~\ref{sec:rltechniques} is that it does
+not always do so, and the design that follows depends on knowing exactly how
+often and in what way. The Regulation~M-A log set described in
+Section~\ref{sec:axisc} was therefore parsed directly and measured before any
+model was specified, over the whole of its 6\,905 battles and therefore all
+13\,810 of its player-brings.
+
+What a log records is not a bring but a sequence of appearances. The two
+Pok\'emon a player sends out immediately after Team Preview are written to the
+log as switch-ins at the start of the battle, so \textbf{the lead pair is
+recovered exactly in every battle}. A reserve, by contrast, appears in the log
+only if it is brought onto the field at some point, and a battle can end before
+that happens: the winning player has no reason to switch once the position is
+decided, and the losing player may forfeit while a member is still on the
+bench. Formally, for a logged bring the observation is
+
+\begin{equation}
+o = \langle L,\, V \rangle, \qquad L \subset c,\ |L| = 2, \quad V \subseteq c \setminus L ,
+\label{eq:obs}
+\end{equation}
+
+\noindent where $c$ is that player's six-Pok\'emon team configuration, $L$ the
+observed lead pair and $V$ the set of reserves that were revealed,
+$v = |V| \in \{0,1,2\}$. The distribution of $v$ over the
+13\,810 player-brings measured is 84.1\% with $v=2$ (the complete bring is
+recorded), 12.0\% with $v=1$, and 3.9\% with $v=0$. Both brings of a battle are
+complete in 72.5\% of cases.
+
+Two properties of this missingness matter more than its rate. The first is that
+it is confined to the second step of the MDP: $a_0$ is supervised in 100\% of
+recorded player-brings and only $a_1$ is ever ambiguous. The second is that it
+is not random. Complete reveals are far more frequent among losing players
+(92.8\%) than among winning ones (73.2\%), for the obvious reason that a player
+who is winning is not forced to commit their remaining Pok\'emon. The rate of
+disclosure is therefore correlated with the outcome, which has a direct
+consequence for the design: discarding incomplete records would not
+produce a smaller unbiased sample but a sample enriched in losing brings, and
+the number of revealed Pok\'emon must never be supplied to any model as a
+feature, since it is a proxy for the label the model is meant to predict.
+
+\subsection{Predicting the complete bring}
+\label{sec:whyfull}
+
+An obvious response to Section~\ref{sec:observability} would be to reduce the
+problem to the part of it that is always observed, predicting only the lead
+pair and its 15 alternatives. That reduction is rejected here, for five
+reasons.
+
+\paragraph{The decision the game poses is the bring} A player at Team Preview
+submits four Pok\'emon at once. The reserves are committed in the same instant
+as the leads and cannot be revised afterwards. A model that predicts leads
+answers a question no player is ever asked, and the research question of this
+work is stated over the decision as the format defines it, not over the portion
+of it that happens to be easiest to observe.
+
+\paragraph{The reserves determine what the leads are worth} Whether a lead pair
+is a good choice depends on what is available to come in behind it. Switching
+is a central mechanic of the format, and \cite{simoes2020} report that the
+value of switching is one of the behaviours an agent acquires without any prior
+domain knowledge, which is to say it is a real and learnable component of
+competitive value rather than an incidental one. A lead pair scored without its
+reserves is scored against an unspecified continuation.
+
+\paragraph{Comparability with the existing work} Ninety is the size
+this decision has been given in the only published treatment of it
+\cite{angliss2026}, and the Selection Phase of \cite{reis2021} also selects
+a sub-team rather than a front line. Reducing the space to 15 would place the
+results of this work outside comparison with either, and would understate the
+difficulty of the task by a factor of six.
+
+\paragraph{The labels are partial, not absent} The distinction is what allows us to still consider the whole bring, even if some of it is unseen. In each incomplete record it is known exactly how many reserves
+are missing and exactly which Pokémon they could be, so what the log supplies
+is a set of brings consistent with what was seen,
+
+\begin{equation}
+\mathcal{C}(o) = \{\, b = (L, R) \;:\; V \subseteq R \subseteq c \setminus L \,\},\\
+\qquad |\mathcal{C}(o)| = \binom{4-v}{2-v} ,
+\label{eq:consistent}
+\end{equation}
+
+\noindent where $R$ is the reserved pair, so that $|\mathcal{C}(o)| = 1$ when $v=2$, $3$ when $v=1$ and $6$
+when $v=0$. Weighted by the frequencies of Section~\ref{sec:observability}, the
+average record narrows the 90 alternatives to 1.44 of them. This is a
+supervision problem and not a reason to change the question. The corresponding
+objective replaces the log-likelihood of a single label with the log-likelihood
+of the consistent set,
+
+\begin{equation}
+\mathcal{L} \;=\; -\sum_{o \,\in\, \mathcal{D}} \log \!\!\sum_{b \,\in\, \mathcal{C}(o)} \rho(b \mid s) ,
+\label{eq:partial}
+\end{equation}
+
+\noindent where $\mathcal{D}$ is the set of logged brings in the training
+window, and which reduces exactly to ordinary cross-entropy on the 84.1\% of
+records where $\mathcal{C}(o)$ is a singleton, and which spreads likelihood over
+the consistent completions. Since $\mathcal{C}(o)$ always contains the true
+bring, the objective is never trained against a target known to be wrong.
+
+\paragraph{Evaluation is unaffected} The limitation lives in the supervision
+and nowhere else. The agent emits a complete bring at every decision, that
+bring is submitted in full to the simulator, and the primary measure of this
+work is the win rate of the battles that result. No quantity in the answer to
+the research question is read off a log at all, so no part of it inherits the
+ambiguity.
+
+To this can be added that reducing the problem to the lead pair would collapse
+the two-step Markov Decision Process of Section~\ref{sec:mdp} to a single step,
+discarding the factorisation of (\ref{eq:actionspace}) and, with it, the only
+stage of the decision at which the counter-selection reasoning described by
+\cite{crane2021} operates: in VGC, the reserve pair is precisely where a player holds
+their response to what the opponent is expected to lead with. Simply put, this makes the problem more interesting and the solution an actual novelty.
+
+%  optional, if you keep the learned matchup evaluator 
+\subsection{Learned Matchup Evaluator}
+\label{sec:evaluator}
+Searching the space of bring decisions requires a way to score a candidate
+without playing it. The direct alternative, simulating battles for each of
+the 90 candidates, is impractical. Pok\'emon is highly stochastic, and
+\cite{galway2008} notes that stochastic game environments produce noisy fitness
+evaluations requiring a large number of games per candidate before the estimate
+is reliable. Multiplying 90 candidates by the number of battles needed to
+distinguish them, and again by the number of search iterations, places
+simulation-based scoring beyond the computational capabilities of this work. We
+therefore adopt a learned matchup evaluator as the objective that search
+maximises, similar to the approach of \cite{reis2024}, in which a neural network
+trained to predict match outcomes replaces battle simulation as the criterion
+for team search.
+
+Since VGC is symmetric and zero-sum, it can then be collapsed into the following: Let $f$ map a bring to a $K$-dimensional embedding and let $M$ be an
+antisymmetric matrix. We adopt the bilinear matchup formulation of
+\cite{oblander2025}, which models the win probability between two
+six-Pok\'emon teams, and apply it at the level of the bring. The estimated
+advantage of $b_1$ against $b_2$ is
+\begin{equation}
+\hat{v}(b_1, b_2) = \sigma\!\left( f(b_1)^{\top} M f(b_2) \right), \qquad M = -M^{\top},
+\label{eq:bilinear}
+\end{equation}
+\noindent where $\sigma$ denotes the logistic function. Since $M$ is
+antisymmetric, exchanging the arguments negates the bilinear score, and
+$\sigma(-x) = 1 - \sigma(x)$ therefore gives
+$\hat{v}(b_1,b_2) = 1 - \hat{v}(b_2,b_1)$ by construction.
+
+The embedding function $f$ is instantiated as follows. Each Pok\'emon $x$ is
+mapped to a feature vector $\phi$ by an embedding layer over its species,
+moves, held item, and ability. Given a bring $b$ with lead pair $L$
+and reserve pair $R$,
+\begin{align}
+h(b) &= \mathrm{ReLU}\Big(\beta_h + W_L \sum_{x \in L} \phi_x + W_R \sum_{x \in R} \phi_x\Big), \\
+f(b) &= \sigma\big(\beta_z + W_z\, h(b)\big),
+\end{align}
+\noindent where $\beta_h, \beta_z$ are biases and $W_L, W_R, W_z$ learned
+projections. Summing within each subset makes $h$ invariant to the order in
+which the two leads or the two reserves are listed, since using distinct
+projections $W_L \neq W_R$ prevents the two roles from being interchangeable.
+This is the structural counterpart of the action space defined in
+(\ref{eq:actionspace}), in which the 90 alternatives are counted without regard
+to order within either pair.
+
+This functional form is chosen for three reasons. First, the antisymmetry
+constraint enforces the zero-sum property of the game structurally rather than
+requiring the model to approximate it from data. Second, the constraint
+is obtained at no cost in predictive accuracy: \cite{oblander2025} reports
+66.43\% test accuracy for the bilinear specification against 66.40\% for an
+unconstrained matchup function on the same data, while
+outperforming pre-trained embeddings. Third, the bilinear form
+places the matchup relation in a linear structure over the embedding space,
+so that the geometry of $f$ can be inspected to characterise which
+configurations counter which, an added layer of interpretability that a general
+non-linear predictor does not provide.
+
+To arrive at our \textbf{fitness function} $\hat{v}$ starting from \cite{oblander2025}'s, three adaptations are required. The original formulation embeds an unordered set of six Pok\'emon and
+accordingly constrains $f$ to be permutation-symmetric across all slots. A
+bring is not fully unordered: the two leads occupy the field at the start of
+the battle while the two reserves do not. We therefore retain permutation
+symmetry within each pair while distinguishing the pairs themselves, computing
+separate order-invariant aggregations over the lead and reserve subsets and
+combining them through distinct projections. Once again, this is how it preserves the invariance
+implied by the action space, in which the $\binom{6}{2}\binom{4}{2} = 90$
+alternatives are counted without regard to order within either pair, while
+allowing the model to represent the distinction between leading with a
+Pok\'emon and holding it in reserve. 
+
+The original
+also includes an additive player-skill term so that $M$ captures matchup
+structure residual of player ability; in our evaluation both sides are played
+by an identical fixed battle policy, so no such correction is required.
+
+The third adaptation follows from Section~\ref{sec:observability}. $\hat{v}$ is
+trained on human play rather than on simulated matches: each Open Team Sheet
+battle log in \cite{angliss2026} yields both players' six-Pok\'emon teams, the
+observations $o_1, o_2$ of their two brings, and the outcome. In the 72.5\% of
+battles where both brings are recorded in full this is a supervised target of
+the form $(b_1, b_2, \text{winner})$ exactly as intended. Where it is not, the
+training example is a pair of consistent sets rather than a pair of brings, and
+the likelihood of the observed outcome is marginalised over their product in
+the manner of (\ref{eq:partial}),
+\begin{equation}
+\Pr(w{=}1 \mid o_1, o_2) = \!\!\!\sum_{b_1 \in \mathcal{C}(o_1)} \sum_{b_2 \in \mathcal{C}(o_2)} \!\!\! q(b_1)\, q(b_2)\, \hat{v}(b_1,b_2) ,
+\label{eq:marginal}
+\end{equation}
+\noindent with $q$ uniform over each consistent set, the complementary
+expression for $w{=}2$, and at most $6 \times 6 = 36$ terms in the double sum.
+No battle is discarded, which for the reasons given in
+Section~\ref{sec:observability} matters: the discarded 27.5\% would not be a
+random subset.
+
+\subsection{Why both $\hat{v}$ and $R_{\mathcal{B}}$?}
+
+The reward $R_{\mathcal{B}}$ of Section~\ref{sec:mdp} is available only for
+battles that were actually played. For training the selection policy this poses
+no difficulty: each logged battle is a complete episode, supplying the state,
+the bring and the outcome directly. For searching it gets a little trickier. A procedure that
+explores the 90 alternatives generates candidates no player selected and for
+which no outcome was ever recorded, and ranking them requires estimating
+$R_{\mathcal{B}}$ for pairs absent from the data.
+
+The learned evaluator provides that estimate. Where $R_{\mathcal{B}} \in
+\{-1,+1\}$ is a realised outcome, $\hat{v}(b_1,b_2) \in (0,1)$ approximates the
+probability that $b_1$ defeats $b_2$, so that
+\begin{equation}
+    \hat{v} \approx \frac{\mathbb{E}[R_{\mathcal{B}}] + 1}{2}
+\end{equation}
+where $\mathbb{E}$ denotes expectation over the stochasticity under the fixed battle
+policy $\pi_b$. The two are the same quantity observed at different levels: one
+discrete and sampled, the other continuous and predicted.
+The role of $\hat{v}$ is confined to search. It is an approximation, learned
+from data, used to rank candidate brings during training at a cost that
+simulation cannot match. 
+
+To be clear, $\hat{v}$ is not used to answer the research question. That
+answer comes from played battles: the selected bring is executed under a fixed
+battle policy shared by both sides, over 1000 battles per team pair with the
+sides exchanged, and measured against a population-usage baseline. Evaluating
+the policy with the same function it was trained to maximise would be
+circular, and the separation is maintained deliberately: $\hat{v}$ measures
+whether a bring \emph{should} win, and the evaluation measures whether it
+\emph{does}. It is worth noting that this separation is what keeps the partial
+supervision of Section~\ref{sec:observability} out of the result: the
+ambiguity enters $\hat{v}$ and the selection policy, both of which are trained
+from logs, and never enters the win rate, which is produced by simulation.
+
+One consequence of training on human logs should be noted. $\hat{v}$ learns
+the regularities of play between human opponents, whereas evaluation is
+conducted under a fixed battle policy. If that policy is a reasonable proxy for
+competent human play, the learned advantages should transfer; if it is not, a
+divergence between $\hat{v}$ and the observed win rate is itself an
+informative result, and is reported as such.
+
+\subsection{Experimental Pipeline}
+
+It comprises four stages.
+
+\subsubsection{Data extraction} Battle logs are obtained from the Open Team Sheet
+VGC dataset released with \cite{angliss2026} and parsed directly from the raw
+Showdown protocol rather than through the accompanying log-to-trajectory
+tooling, which presupposes that both brings are known. From each log the six
+Pok\'emon of each side are read from the team-sheet lines, the lead pair of
+each side from the two switch-ins recorded immediately after the start of the
+battle, the revealed reserves from every subsequent entry onto the field, and
+the winner from the terminal line, matched to a side by the player
+declarations. Nicknames, form changes and mid-battle transformations are
+normalised to the base species before matching, since a Pok\'emon may appear
+under a different identifier once it changes form. Each battle therefore yields
+$(c_1, c_2, o_1, o_2, w)$, with $o_i$ as defined in (\ref{eq:obs}), which
+collapses to the intended $(c_1, c_2, b_1, b_2, w)$ whenever both observations
+are complete.
+
+\subsubsection{Baseline construction} Bring frequencies conditioned on team archetype
+are computed over the training window to instantiate the usage-statistics
+baseline. Since a frequency table is itself a label-consuming estimate, incomplete
+records contribute fractional counts spread uniformly over $\mathcal{C}(o)$
+rather than being dropped, for the reason given in Section~\ref{sec:observability}.
+
+\subsubsection{Model training} The matchup evaluator $\hat{v}$ is fitted to the
+extracted records under (\ref{eq:marginal}), and the selection policy is
+trained over the MDP of Section~\ref{sec:mdp} under (\ref{eq:partial}). No
+feature derived from the length of the battle or from the number of Pok\'emon
+revealed is made available to either model, i.e. winning while revealing less Pokémon is not rewarded more.
+
+\subsubsection{Evaluation} Selected brings are played out on a locally hosted
+Showdown, a battle simulator, server under a fixed battle policy, and win rates are compared against
+the baselines.
+
+\subsection{Experimental Protocol}
+\label{sec:protocol}
+
+\subsubsection{Partitions} Battles are split \textbf{temporally} rather than at random:
+the training set precedes the validation and test sets in time. The Pok\'emon
+metagame evolves continuously \cite{karten2026}, and a random split would allow
+a model to exploit knowledge of later trends when predicting earlier battles.
+The usage statistics defining the baseline are computed on the training window
+only, for the same reason.
+
+\subsubsection{Validation} Model selection uses a held-out set of team pairs unseen
+during training, following the generalization protocol of \cite{angliss2026},
+which reserves unseen teams to separate performance from memorisation.
+
+\subsubsection{Metrics} Four are reported, of which one is primary and three are
+diagnostic. \emph{Downstream win rate} is the primary measure, as it is the
+quantity named in the research question, and it is obtained entirely from
+simulated battles and therefore carries none of the label ambiguity of
+Section~\ref{sec:observability}.
+
+The three diagnostics answer \emph{why} a win rate is or is not attained, and
+each is paired with the portion of the data on which it is well defined.
+\emph{Lead-pair exact match} measures whether the opponent's lead pair is
+recovered, over 15 alternatives and against a chance floor of 6.67\%; it is
+defined on 100\% of the test battles. \emph{Per-slot recall} measures how many
+of the revealed members of the opponent's bring are identified, degrades
+gracefully where exact match does not, and is likewise defined on every battle,
+since it asks only about Pok\'emon that were seen. \emph{Full-bring exact
+match}, over 90 alternatives and against a chance floor of 1.11\%, is defined
+only where the opponent's bring was recorded in full. It is reported in two
+forms: a strict figure computed on the complete-case subset, stated together
+with the caveat that this subset over-represents losing players
+(Section~\ref{sec:observability}) and is therefore not a random sample of test
+battles; and a permissive figure counting a prediction as correct when it lies
+in $\mathcal{C}(o)$, which is unbiased in coverage but optimistic in value. The
+two bracket the quantity of interest, and both are given rather than either
+alone.
+
+\subsubsection{Sample sizes and reporting} Each matchup is evaluated over 1000 battles
+with the sides exchanged, matching the protocol of \cite{angliss2026}, which
+reports an error of approximately $\pm 0.03$ at that sample size; the swap
+follows \cite{reis2021}, where teams are exchanged between players so that
+results are not confounded by team strength. Results are reported as
+distributions over at least ten random seeds and against a population of
+opponents rather than a single fixed one, as argued by \cite{liwellman2024}.
+
+\subsection{Baselines}
+
+Table~\ref{tab:baselines} lists the planned baselines. Of them, the
+usage-statistics predictor is the one the proposed policy must beat:
+\cite{oblander2025} measures human players placing 59.3\% of their decision
+weight on the population action distribution, so a model reproducing that
+distribution reproduces most of human behaviour and is a demanding rather than
+a trivial comparison. Every baseline is fitted on the same records and under
+the same treatment of incomplete ones as the proposed policy, so that no part
+of a reported difference is attributable to one method having been given
+cleaner data than another.
+
+\subsection{Risks and Mitigation}
+A localized summary of the decisions previously justified that are looking to minimize misrepresentation of the solution.
+
+\subsubsection{Data extraction} This risk is now discharged rather than
+projected. The bring was confirmed recoverable from the released logs by
+parsing 6\,905 of them directly, and the recovery is exact for the lead pair in
+every battle and for the full bring in 84.1\% of player-brings
+(Section~\ref{sec:observability}); the reconstruction procedure of
+\cite{grigsby2025} is therefore not required. Two of the 13\,810 player-brings
+parsed produced an internally inconsistent record, attributing more than four
+Pok\'emon to a four-slot bring, which indicates a residual edge case in the
+handling of form changes or of the illusion mechanic. These represent 0.014\%
+of records and are excluded; the parser is re-verified against a manually
+annotated sample before the full extraction is used.
+
+\subsubsection{Partial supervision} The marginalised objectives
+(\ref{eq:partial}) and (\ref{eq:marginal}) assume that, conditional on the
+state, which reserves were revealed carries no information about which bring
+was chosen. That assumption is imperfect, since disclosure depends on how the
+battle developed. It is mitigated in three ways: no feature derived from the
+number of revealed Pok\'emon is given to any model, so the correlation cannot
+be exploited; the metrics affected are reported on both the complete-case and
+the consistent-set convention, which bound the effect from either side; and the
+primary result is a simulated win rate, which does not depend on the labels at
+all.
+
+\subsubsection{Complete-case bias} Filtering to fully revealed brings would be
+the simplest response to the limitation and is explicitly not taken. Complete
+reveals occur in 92.8\% of losing brings against 73.2\% of winning ones, so the
+filtered sample is enriched in brings that lost. Retaining every record under
+(\ref{eq:partial}) avoids importing that bias into the training distribution.
+
+\subsubsection{Reward specification} Addressed by the sparse outcome reward argued for
+above, with any shaping term ablated before it is retained.
+
+\subsubsection{Noisy fitness} Scoring candidates by simulation is unreliable in a
+stochastic game \cite{galway2008}; mitigated by the learned evaluator, with a
+fixed battle budget per candidate and reported variance wherever simulation is
+used.
+
+\subsubsection{Distribution shift} $\hat{v}$ is trained on human play but evaluated
+under a fixed battle policy. Divergence between predicted and observed
+advantage is measured and reported rather than assumed away.
+
+\subsubsection{Overfitting to fixed teams} \cite{huang2019} report a specialised agent
+falling to 77 wins in 500 games outside its training teams, and
+\cite{angliss2026} find single-team agents generalising worst. Mitigated by
+reporting results on held-out team pairs alongside seen ones.
+
+\subsubsection{Exploitability} Agents in this domain are close to fully exploitable
+\cite{angliss2026}. A best-response win rate is reported so that robustness is
+stated rather than implied.
+
+\subsubsection{Scope} As it's been made explicit, no battle policy is trained; existing agents are reused, as in
+\cite{reis2024} and \cite{reis2025}.
+
+
+\begin{thebibliography}{16}
+
+\bibitem{hu2024}
+C.~Hu, Y.~Zhao, Z.~Wang, H.~Du, and J.~Liu, ``Games for artificial intelligence research: a review and perspectives,''
+\emph{IEEE Transactions on Artificial Intelligence}, vol.~5, no.~12, pp.~5949--5968, Dec.~2024.
+
+\bibitem{vgchandbook}
+The Pok\'emon Company International, ``Play! Pok\'emon Video Game Championships
+tournament handbook,'' 2026. [Online].
+Available: \url{https://www.pokemon.com/static-assets/content-assets/cms2/pdf/play-pokemon/rules/play-pokemon-vgc-tournament-handbook-en.pdf}
+[Accessed: Sep. 3, 2026].
+
+\bibitem{karten2026}
+S.~Karten \emph{et al.}, ``The Pok\'eAgent challenge: competitive and long-context learning at scale,''
+in \emph{Advances in Neural Information Processing Systems 38 (NeurIPS 2025) Competition Track}, 2025.
+
+\bibitem{angliss2026}
+C.~L. Angliss, J.~Cui, J.~Hu, A.~Rahman, and P.~Stone, ``VGC-Bench: towards mastering diverse team strategies in competitive Pok\'emon,''
+in \emph{Proc. 25th Int. Conf. Autonomous Agents and Multiagent Systems (AAMAS)}, Paphos, Cyprus, 2026.
+
+
+
+\bibitem{reis2021}
+S.~Reis, L.~P. Reis, and N.~Lau, ``VGC AI competition - a new model of meta-game balance AI competition,''
+in \emph{2021 IEEE Conference on Games (CoG)}, 2021, pp.~1--8.
+
+\bibitem{simoes2020}
+D.~Sim\~oes, S.~Reis, N.~Lau, and L.~P. Reis, ``Competitive deep reinforcement learning over a Pok\'emon battling simulator,''
+in \emph{2020 IEEE International Conference on Autonomous Robot Systems and Competitions (ICARSC)}, Ponta Delgada, Portugal, 2020, pp.~40--45.
+
+\bibitem{grigsby2025}
+J.~Grigsby, Y.~Xie, J.~Sasek, S.~Zheng, and Y.~Zhu, ``Human-level competitive Pok\'emon via scalable offline reinforcement learning with transformers,''
+\emph{Reinforcement Learning Journal}, 2025.
+
+\bibitem{huang2019}
+D.~Huang and S.~Lee, ``A self-play policy optimization approach to battling Pok\'emon,''
+in \emph{2019 IEEE Conference on Games (CoG)}, London, U.K., 2019, pp.~1--4.
+
+\bibitem{reis2024}
+S.~Reis, R.~Novais, L.~P. Reis, and N.~Lau, ``An adversarial approach for automated Pok\'emon team building and metagame balance,''
+\emph{IEEE Transactions on Games}, vol.~16, no.~2, pp.~365--375, Jun.~2024.
+
+\bibitem{reis2025}
+S.~Reis, A.~L. Martins, R.~Novais, and F.~Alves, ``A new rules balance track for the Pok\'emon VGC AI competition 2.0,''
+in \emph{2025 IEEE Conference on Games (CoG)}, Lisbon, Portugal, 2025, pp.~1--8.
+
+\bibitem{rodriguez2024}
+G.~Rodriguez, E.~Villanueva, and J.~Bald\'eon, ``Enhancing Pok\'emon VGC player performance: intelligent agents through deep reinforcement learning and neuroevolution,''
+in \emph{HCI in Games}, ser. Lecture Notes in Computer Science, vol.~14730. Cham, Switzerland: Springer, 2024, pp.~275--294.
+
+\bibitem{li2025}
+Z.~Li, Q.~Ji, X.~Ling, and Q.~Liu, ``A comprehensive review of multiagent reinforcement learning in video games,''
+\emph{IEEE Transactions on Games}, vol.~17, no.~4, pp.~873--892, 2025.
+
+\bibitem{galway2008}
+L.~Galway, D.~Charles, and M.~Black, ``Machine learning in digital games: a survey,''
+\emph{Artificial Intelligence Review}, vol.~29, no.~2--4, pp.~123--161, 2008.
+
+\bibitem{liwellman2024}
+Z.~Li and M.~P. Wellman, ``A meta-game evaluation framework for deep multiagent reinforcement learning,''
+in \emph{Proc. 33rd Int. Joint Conf. Artificial Intelligence (IJCAI)}, 2024, pp.~148--156.
+
+\bibitem{oblander2025}
+S.~Oblander, ``Representation learning for behavioral analysis of complex competitive decisions,''
+Social Science Research Network, Rochester, NY, Working Paper, 2025. [Online]. Available: \url{https://papers.ssrn.com/abstract=4969862}
+
+\bibitem{crane2021}
+D.~Crane, Z.~Holmes, T.~T. Kosiara, M.~Nickels, and M.~Spradling,
+``Team counter-selection games,'' in \emph{Proc. IEEE Conf. Games (CoG)}, 2021, pp.~1--8.
+
+\end{thebibliography}
+\vspace{12pt}
+
+\end{document}
