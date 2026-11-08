@@ -1,0 +1,9 @@
+﻿{'epoch': 0, 'train_loss': 0.6913, 'val_team_nll': 0.6901, 'val_team_acc': 0.5386, 'val_team_auc': 0.554, 'val_obs_nll': 0.6907, 'val_obs_acc': 0.5425, 'val_obs_auc': 0.5431}
+{'epoch': 1, 'train_loss': 0.6797, 'val_team_nll': 0.6873, 'val_team_acc': 0.5579, 'val_team_auc': 0.5614, 'val_obs_nll': 0.6943, 'val_obs_acc': 0.5347, 'val_obs_auc': 0.5524}
+{'epoch': 2, 'train_loss': 0.6701, 'val_team_nll': 0.6851, 'val_team_acc': 0.5512, 'val_team_auc': 0.5697, 'val_obs_nll': 0.6926, 'val_obs_acc': 0.5367, 'val_obs_auc': 0.5524}
+{'epoch': 3, 'train_loss': 0.6596, 'val_team_nll': 0.686, 'val_team_acc': 0.5386, 'val_team_auc': 0.5687, 'val_obs_nll': 0.7005, 'val_obs_acc': 0.5203, 'val_obs_auc': 0.5474}
+{'epoch': 4, 'train_loss': 0.6496, 'val_team_nll': 0.6872, 'val_team_acc': 0.5454, 'val_team_auc': 0.5703, 'val_obs_nll': 0.703, 'val_obs_acc': 0.5193, 'val_obs_auc': 0.5511}
+{'epoch': 5, 'train_loss': 0.6424, 'val_team_nll': 0.688, 'val_team_acc': 0.5425, 'val_team_auc': 0.5694, 'val_obs_nll': 0.709, 'val_obs_acc': 0.5135, 'val_obs_auc': 0.5478}
+{'epoch': 6, 'train_loss': 0.6365, 'val_team_nll': 0.6861, 'val_team_acc': 0.5425, 'val_team_auc': 0.5758, 'val_obs_nll': 0.7067, 'val_obs_acc': 0.5222, 'val_obs_auc': 0.5472}
+{'epoch': 7, 'train_loss': 0.6288, 'val_team_nll': 0.6885, 'val_team_acc': 0.5454, 'val_team_auc': 0.5693, 'val_obs_nll': 0.7152, 'val_obs_acc': 0.5174, 'val_obs_auc': 0.545}
+mejor epoca (val): {'epoch': 2, 'train_loss': 0.6700762541670549, 'val_team_nll': 0.6851346135772333, 'val_team_acc': 0.5511583011583011, 'val_team_auc': 0.5696922824007652, 'val_obs_nll': 0.6925599826751528, 'val_obs_acc': 0.5366795366795367, 'val_obs_auc': 0.5523635521281683} -> C:\Users\XPC\Documents\TEC\IA\BringPredictorVGC\results\vhat_20261107-142758_s0

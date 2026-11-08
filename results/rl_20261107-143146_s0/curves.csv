@@ -1,0 +1,3 @@
+episode,step,T_train_eps_per_s,draws,entropy,grad_norm,kl_to_bc,loss,mean_reward,turns_lost,turns_won,val_battles,val_distinct_brings,val_sd_pairs,val_wall_s,val_win_rate,win_rate_batch
+0,0,,,,,,,,,,12,3,0.08838834764831845,602.4,0.5625,
+128,1,48.306,0,3.815101385116577,1.7654865980148315,0.0,-0.044562626630067825,-0.21875,4.217948717948718,4.58,16,4,0.08838834764831845,0.3,0.4375,0.390625

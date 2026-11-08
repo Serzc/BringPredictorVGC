@@ -1,0 +1,72 @@
+[
+ {
+  "battle_id": "gen9championsvgc2026regma-2619201377",
+  "packed_A": "Charizard||CharizarditeY|Blaze|Protect,SolarBeam,HeatWave,AirSlash|||M|||50|]Whimsicott||FairyFeather|Prankster|Protect,Moonblast,Tailwind,Encore|||M|||50|]Kingambit||ChopleBerry|Defiant|LowKick,KowtowCleave,SuckerPunch,IronHead|||M|||50|]Basculegion||MysticWater|Adaptability|Protect,AquaJet,WaveCrash,LastRespects|||M|||50|]Glimmora||FocusSash|ToxicDebris|SpikyShield,PowerGem,EarthPower,SludgeBomb|||M|||50|]Venusaur||SoftSand|Chlorophyll|Protect,GigaDrain,EarthPower,SleepPowder|||F|||50|",
+  "packed_B": "Garchomp||RoseliBerry|RoughSkin|Earthquake,DragonClaw,RockSlide,PoisonJab|||F|||50|]Charizard||CharizarditeY|Blaze|HeatWave,WeatherBall,SolarBeam,Protect|||M|||50|]Whimsicott||FocusSash|Prankster|Moonblast,GrassKnot,Encore,Tailwind|||M|||50|]Dragonite||Dragoninite|Multiscale|DragonPulse,HeatWave,Thunderbolt,Protect|||M|||50|]Kingambit||ChopleBerry|Defiant|KowtowCleave,SuckerPunch,IronHead,LowKick|||F|||50|]Sylveon||FairyFeather|Pixilate|HyperVoice,QuickAttack,Moonblast,Detect|||F|||50|",
+  "key_A": "basculegion|charizard|glimmora|kingambit|venusaur|whimsicott",
+  "key_B": "charizard|dragonite|garchomp|kingambit|sylveon|whimsicott"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2618807046",
+  "packed_A": "Floette-Eternal||Floettite|FlowerVeil|Moonblast,DazzlingGleam,Protect,CalmMind|||F|||50|]Garchomp||SoftSand|RoughSkin|Earthquake,RockSlide,DragonClaw,Protect|||F|||50|]Aerodactyl||FocusSash|Unnerve|Tailwind,RockSlide,Protect,DualWingbeat|||F|||50|]Incineroar||ChopleBerry|Intimidate|FakeOut,ThroatChop,FlareBlitz,PartingShot|||M|||50|]Farigiraf||SitrusBerry|ArmorTail|Psychic,HyperVoice,HelpingHand,TrickRoom|||M|||50|]Torkoal||Charcoal|Drought|Eruption,WeatherBall,EarthPower,Protect|||M|||50|",
+  "packed_B": "Tyranitar||Tyranitarite|SandStream|Protect,RockSlide,KnockOff,LowKick|||F|||50|]Excadrill||FocusSash|SandRush|Protect,StompingTantrum,IronHead,RockSlide|||F|||50|]Corviknight||Leftovers|MirrorArmor|Tailwind,BulkUp,BraveBird,BodyPress|||F|||50|]Rotom-Wash||SitrusBerry|Levitate|WillOWisp,Electroweb,Thunderbolt,HydroPump||||||50|]Incineroar||ChopleBerry|Intimidate|FakeOut,PartingShot,FlareBlitz,DarkestLariat|||M|||50|]Dragonite||Dragoninite|Multiscale|Protect,IceBeam,DragonPulse,Tailwind|||M|||50|",
+  "key_A": "aerodactyl|farigiraf|floetteeternal|garchomp|incineroar|torkoal",
+  "key_B": "corviknight|dragonite|excadrill|incineroar|rotomwash|tyranitar"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2623913123",
+  "packed_A": "Vivillon||ChoiceScarf|CompoundEyes|SleepPowder,Hurricane,RagePowder,Tailwind|Timid||F|||50|]Sinistcha||KasibBerry|Hospitality|MatchaGotcha,RagePowder,LifeDew,Protect|Bold|||||50|]Maushold||ChopleBerry|FriendGuard|SuperFang,Feint,FollowMe,Protect|Impish|||||50|]Delphox||Delphoxite|Blaze|HeatWave,Psychic,NastyPlot,Protect|Timid||F|||50|]Floette-Eternal||Floettite|FlowerVeil|Moonblast,DrainingKiss,CalmMind,Protect|Modest||F|||50|]Incineroar||PasshoBerry|Intimidate|FlareBlitz,ThroatChop,PartingShot,FakeOut|Careful||F|||50|",
+  "packed_B": "Rotom-Wash||ChoiceScarf|Levitate|Electroweb,VoltSwitch,HydroPump,WillOWisp|Timid|||||50|]Sinistcha||KasibBerry|Hospitality|MatchaGotcha,RagePowder,TrickRoom,Protect|Bold|||||50|]Skeledirge||SitrusBerry|Unaware|WillOWisp,TorchSong,SlackOff,Protect|Bold||M|||50|]Froslass||Froslassite|CursedBody|Blizzard,AuroraVeil,ShadowBall,Protect|Modest||F|||50|]Garchomp||HabanBerry|RoughSkin|DragonClaw,Earthquake,RockSlide,Protect|Jolly||M|||50|]Sneasler||WhiteHerb|Unburden|CloseCombat,GunkShot,FakeOut,Protect|Adamant||F|||50|",
+  "key_A": "delphox|floetteeternal|incineroar|maushold|sinistcha|vivillon",
+  "key_B": "froslass|garchomp|rotomwash|sinistcha|skeledirge|sneasler"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2622387037",
+  "packed_A": "Floette-Eternal||Floettite|FlowerVeil|DazzlingGleam,DrainingKiss,CalmMind,Protect|Modest||F|||50|]Tyranitar||Tyranitarite|SandStream|RockSlide,KnockOff,HighHorsepower,DragonDance|Adamant||F|||50|]Sinistcha||ColburBerry|Hospitality|RagePowder,MatchaGotcha,TrickRoom,StrengthSap|Bold|||||50|]Maushold||ChopleBerry|FriendGuard|FollowMe,Feint,HelpingHand,Protect|Jolly|||||50|]Basculegion||ChoiceScarf|Adaptability|LastRespects,WaveCrash,AquaJet,FlipTurn|Jolly||M|||50|]Incineroar||SitrusBerry|Intimidate|PartingShot,DarkestLariat,FlareBlitz,FakeOut|Adamant||M|||50|",
+  "packed_B": "Primarina||Leftovers|LiquidVoice|HyperVoice,Moonblast,Protect,FlipTurn|Calm||F|||50|]Typhlosion-Hisui||ChoiceScarf|Blaze|HeatWave,Eruption,Protect,ShadowBall|Timid||M|||50|]Excadrill||FocusSash|SandRush|IronHead,Earthquake,Protect,ThroatChop|Adamant||F|||50|]Morpeko||WhiteHerb|HungerSwitch|AuraWheel,FakeOut,Protect,Electroweb|Adamant||F|||50|]Tyranitar||Tyranitarite|SandStream|RockSlide,KnockOff,Protect,IcePunch|Brave||F|||50|]Tsareena||SitrusBerry|QueenlyMajesty|Taunt,TripleAxel,Protect,TropKick|Careful||F|||50|",
+  "key_A": "basculegion|floetteeternal|incineroar|maushold|sinistcha|tyranitar",
+  "key_B": "excadrill|morpeko|primarina|tsareena|typhlosionhisui|tyranitar"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2624302253",
+  "packed_A": "Charizard||CharizarditeX|Blaze|Protect,DragonDance,FlareBlitz,DragonClaw|Jolly||M|||50|]Sneasler||WhiteHerb|Unburden|CloseCombat,FakeOut,DireClaw,Protect|Jolly||F|||50|]Whimsicott||FairyFeather|Prankster|Tailwind,Moonblast,Encore,Protect|Timid||M|||50|]Milotic||Leftovers|Competitive|Scald,Protect,Recover,IcyWind|Bold||M|||50|]Sinistcha||SitrusBerry|Hospitality|MatchaGotcha,RagePowder,CalmMind,LifeDew|Calm|||||50|]Weavile||ChoiceScarf|Pressure|IcyWind,LowKick,KnockOff,TripleAxel|Jolly||M|||50|",
+  "packed_B": "Talonflame||SharpBeak|GaleWings|DualWingbeat,FlareBlitz,Tailwind,QuickGuard|Jolly||F|||50|]Aegislash||SpellTag|StanceChange|IronHead,SacredSword,ShadowSneak,KingsShield|Adamant||F|||50|]Glimmora||FocusSash|ToxicDebris|PowerGem,SludgeBomb,EarthPower,SpikyShield|Modest||F|||50|]Samurott-Hisui||ChoiceScarf|Sharpness|AquaCutter,NightSlash,SacredSword,FlipTurn|Jolly||M|||50|]Gardevoir||Gardevoirite|Synchronize|HyperVoice,Psyshock,VacuumWave,Protect|Timid||M|||50|]Sneasler||WhiteHerb|Unburden|FakeOut,CloseCombat,DireClaw,ThroatChop|Jolly||F|||50|",
+  "key_A": "charizard|milotic|sinistcha|sneasler|weavile|whimsicott",
+  "key_B": "aegislash|gardevoir|glimmora|samurotthisui|sneasler|talonflame"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2623623043",
+  "packed_A": "Whimsicott||FairyFeather|Prankster|Moonblast,Tailwind,Encore,Protect|Bold||F|||50|]Glimmora||FocusSash|ToxicDebris|SludgeBomb,PowerGem,EarthPower,SpikyShield|Modest||M|||50|]Froslass||Froslassite|CursedBody|Blizzard,ShadowBall,AuroraVeil,Protect|Modest||F|||50|]Incineroar||ChopleBerry|Intimidate|FlareBlitz,ThroatChop,FakeOut,PartingShot|Impish||F|||50|]Garchomp||SitrusBerry|RoughSkin|Earthquake,DragonClaw,RockSlide,Protect|Adamant||F|||50|]Corviknight||Leftovers|MirrorArmor|BraveBird,BodyPress,BulkUp,Roost|Careful||F|||50|",
+  "packed_B": "Venusaur||FocusSash|Chlorophyll|SleepPowder,SludgeBomb,EarthPower,Protect|Modest||F|||50|]Charizard||CharizarditeY|Blaze|HeatWave,SolarBeam,WeatherBall,Protect|Modest||F|||50|]Garchomp||ChoiceScarf|RoughSkin|Earthquake,RockSlide,StompingTantrum,DragonClaw|Adamant||F|||50|]Incineroar||SitrusBerry|Intimidate|FakeOut,FlareBlitz,PartingShot,ThroatChop|Careful||M|||50|]Floette-Eternal||Floettite|FlowerVeil|Moonblast,DazzlingGleam,CalmMind,Protect|Modest||F|||50|]Sinistcha||KasibBerry|Hospitality|MatchaGotcha,RagePowder,TrickRoom,Protect|Relaxed|||||50|",
+  "key_A": "corviknight|froslass|garchomp|glimmora|incineroar|whimsicott",
+  "key_B": "charizard|floetteeternal|garchomp|incineroar|sinistcha|venusaur"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2621413960",
+  "packed_A": "Delphox||Delphoxite|Blaze|HeatWave,Psychic,NastyPlot,Protect|Timid||F|||50|]Gyarados||Gyaradosite|Intimidate|Waterfall,Crunch,DragonDance,Protect|Jolly||F|||50|]Garchomp||ChoiceScarf|RoughSkin|Earthquake,StompingTantrum,DragonClaw,RockSlide|Adamant||M|||50|]Sneasler||FocusSash|Unburden|DireClaw,CloseCombat,FakeOut,Coaching|Jolly||M|||50|]Sinistcha-Masterpiece||KasibBerry|Hospitality|LifeDew,Protect,MatchaGotcha,RagePowder|Calm|||||50|]Heliolisk||Magnet|DrySkin|Thunderbolt,VoltSwitch,EerieImpulse,Protect|Timid||F|||50|",
+  "packed_B": "Arcanine-Hisui||HardStone|RockHead|RockSlide,HeadSmash,FlareBlitz,Protect|Jolly||M|||50|]Tsareena||ChoiceScarf|QueenlyMajesty|TropKick,TripleAxel,LowKick,ZenHeadbutt|Jolly||F|||50|]Garchomp||Garchompite|RoughSkin|StompingTantrum,ScaleShot,RockSlide,Protect|Adamant||M|||50|]Basculegion||FocusSash|Adaptability|Liquidation,LastRespects,AquaJet,Protect|Adamant||M|||50|]Talonflame|||GaleWings|Acrobatics,Taunt,Tailwind,WillOWisp|Jolly||M|||50|]Floette-Eternal||Floettite|FlowerVeil|DazzlingGleam,Moonblast,Protect,CalmMind|Modest||F|||50|",
+  "key_A": "delphox|garchomp|gyarados|heliolisk|sinistchamasterpiece|sneasler",
+  "key_B": "arcaninehisui|basculegion|floetteeternal|garchomp|talonflame|tsareena"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2619338199",
+  "packed_A": "Sableye||FocusSash|Prankster|Detect,FakeOut,Encore,Disable|||M|||50|]Gengar||Gengarite|CursedBody|Protect,Disable,PerishSong,ShadowBall|||F|||50|]Incineroar||PasshoBerry|Intimidate|Protect,FakeOut,ThroatChop,PartingShot|||M|||50|]Politoed||SitrusBerry|Drizzle|Protect,Encore,PerishSong,WeatherBall|||F|||50|]Kommo-o||Leftovers|Soundproof|Protect,ClangorousSoul,ClangingScales,AuraSphere|||F|||50|]Tinkaton||ShucaBerry|MoldBreaker|Protect,FakeOut,Encore,GigatonHammer|||F|||50|",
+  "packed_B": "Torterra||WhiteHerb|ShellArmor|ShellSmash,HeadlongRush,SeedBomb,RockSlide|||M|||50|]Incineroar||ChopleBerry|Intimidate|FakeOut,FlareBlitz,DarkestLariat,PartingShot|||F|||50|]Rotom-Wash||ChoiceScarf|Levitate|HydroPump,VoltSwitch,Discharge,Electroweb||||||50|]Dragonite||Dragoninite|Multiscale|LowKick,Hurricane,DracoMeteor,Protect|||F|||50|]Pelipper||FocusSash|Drizzle|Hurricane,WeatherBall,Tailwind,Protect|||M|||50|]Farigiraf||SitrusBerry|ArmorTail|TwinBeam,Roar,FoulPlay,TrickRoom|||M|||50|",
+  "key_A": "gengar|incineroar|kommoo|politoed|sableye|tinkaton",
+  "key_B": "dragonite|farigiraf|incineroar|pelipper|rotomwash|torterra"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2623037994",
+  "packed_A": "Pelipper||FocusSash|Drizzle|Hurricane,WeatherBall,Tailwind,Protect|Timid||M|||50|]Basculegion||ChoiceScarf|Adaptability|WaveCrash,LastRespects,FlipTurn,AquaJet|Adamant||M|||50|]Archaludon||Leftovers|Stamina|FlashCannon,DragonPulse,ElectroShot,Protect|Modest||M|||50|]Manectric||Manectite|LightningRod|Thunderbolt,Snarl,VoltSwitch,Protect|Timid||F|||50|]Tsareena||KebiaBerry|QueenlyMajesty|Protect,TropKick,TripleAxel,LowKick|Adamant||F|||50|]Mimikyu||WhiteHerb|Disguise|ShadowClaw,ShadowSneak,PlayRough,Protect|Adamant||M|||50|",
+  "packed_B": "Archaludon||Leftovers|Stamina|DracoMeteor,FlashCannon,ElectroShot,Protect|Timid||M|||50|]Pelipper||FocusSash|Drizzle|Tailwind,WideGuard,IceBeam,Protect|Modest||M|||50|]Basculegion||ChoiceScarf|Adaptability|LastRespects,WaveCrash,AquaJet,FlipTurn|Adamant||M|||50|]Meganium||Meganiumite|Overgrow|SolarBeam,DazzlingGleam,WeatherBall,Protect|Timid||F|||50|]Sneasler||WhiteHerb|Unburden|FakeOut,CloseCombat,DireClaw,Protect|Jolly||M|||50|]Charizard||CharizarditeY|Blaze|HeatWave,SolarBeam,AncientPower,Protect|Timid||M|||50|",
+  "key_A": "archaludon|basculegion|manectric|mimikyu|pelipper|tsareena",
+  "key_B": "archaludon|basculegion|charizard|meganium|pelipper|sneasler"
+ },
+ {
+  "battle_id": "gen9championsvgc2026regma-2622336545",
+  "packed_A": "Slowking-Galar||KasibBerry|Regenerator|TrickRoom,RainDance,AcidSpray,HealPulse|Relaxed||F|||50|]Archaludon||Leftovers|Stamina|Snarl,DragonPulse,ElectroShot,Protect|Calm||M|||50|]Pelipper||SitrusBerry|Drizzle|Tailwind,Hurricane,WeatherBall,Protect|Modest||M|||50|]Palafin||MysticWater|ZerotoHero|WaveCrash,FlipTurn,JetPunch,Protect|Jolly||F|||50|]Skarmory||Skarmorite|Sturdy|IronHead,BraveBird,Roost,Protect|Jolly||F|||50|]Sneasler||FocusSash|Unburden|CloseCombat,DireClaw,Coaching,Protect|Adamant||M|||50|",
+  "packed_B": "Venusaur||Venusaurite|Chlorophyll|SludgeBomb,GigaDrain,EarthPower,Protect|Modest||F|||50|]Skarmory||Skarmorite|Sturdy|BraveBird,IronHead,Tailwind,Protect|Jolly||F|||50|]Sableye||RoseliBerry|Prankster|FoulPlay,RainDance,Reflect,LightScreen|Sassy||F|||50|]Archaludon||Leftovers|Stamina|ElectroShot,FlashCannon,DracoMeteor,Protect|Modest||M|||50|]Basculegion||FocusSash|Adaptability|Liquidation,LastRespects,AquaJet,Protect|Jolly||M|||50|]Kangaskhan||SilkScarf|Scrappy|FakeOut,LastResort|Adamant||F|||50|",
+  "key_A": "archaludon|palafin|pelipper|skarmory|slowkinggalar|sneasler",
+  "key_B": "archaludon|basculegion|kangaskhan|sableye|skarmory|venusaur"
+ }
+]

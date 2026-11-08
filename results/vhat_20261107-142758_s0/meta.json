@@ -1,0 +1,48 @@
+{
+  "run_id": "vhat_20261107-142758_s0",
+  "kind": "vhat",
+  "seed": 0,
+  "config": {
+    "d": 64,
+    "hidden": 64,
+    "K": 16,
+    "dropout": 0.1,
+    "lr": 0.001,
+    "weight_decay": 0.0001,
+    "batch_size": 256,
+    "max_epochs": 30,
+    "patience": 5,
+    "seeds": [
+      0
+    ]
+  },
+  "commit": "cb2abba-dirty",
+  "hardware": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "cpu": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
+    "cpu_count": 12,
+    "python": "3.14.6",
+    "torch": "2.15.0",
+    "poke_env": "0.15.0",
+    "numpy": "2.5.4",
+    "showdown_commit": "913da36 (cameronangliss/pokemon-showdown, submodulo de vgc-bench)",
+    "host": "DESKTOP-QJKLVOF"
+  },
+  "started": "2026-11-07T14:28:00",
+  "wall_time_s": 14.61,
+  "best_epoch": 2,
+  "best_val": {
+    "epoch": 2,
+    "train_loss": 0.6700762541670549,
+    "val_team_nll": 0.6851346135772333,
+    "val_team_acc": 0.5511583011583011,
+    "val_team_auc": 0.5696922824007652,
+    "val_obs_nll": 0.6925599826751528,
+    "val_obs_acc": 0.5366795366795367,
+    "val_obs_auc": 0.5523635521281683
+  },
+  "n_train": 4831,
+  "n_val": 1036,
+  "val_win_rate_side1": 0.525096525096525,
+  "note": "Piloto (1 semilla; v-hat no es el modelo de la RQ). No citable."
+}

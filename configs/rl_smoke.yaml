@@ -1,0 +1,21 @@
+# Smoke test del bucle de RL (minutos). No es un resultado.
+# Agente RL: REINFORCE + baseline de media del batch + entropia + KL a rho_BC (plan v2 §7.5).
+# BORRADOR asistido por IA. Valores iniciales del plan; ajustar solo con val.
+bc_ckpt: results/bc_20261107-142757_s0/model.pt   # rho_BC del piloto (semilla 0); cambiar por semilla
+lr: 0.0001
+grad_clip: 1.0
+batch_size: 128       # episodios por actualizacion
+block: 8              # batallas concurrentes por bloque (un par, una orientacion)
+concurrency: 8
+beta_H: 0.01          # barrido {0, 0.01}
+beta_KL: 0.1          # fijo
+episodes: 128
+eval_every: 128
+val_pairs: 2
+val_n_per_pair: 8
+seeds: [0, 1, 2]
+# arena (igual que configs/arena.yaml)
+auto_mega: true
+a8_rule: role_spread
+max_turns: 50
+timeout_s: 600

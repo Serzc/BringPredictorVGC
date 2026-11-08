@@ -1,0 +1,11 @@
+# v-hat, eqs. (8)-(11). Plan v2 §7.4. BORRADOR asistido por IA.
+d: 64
+hidden: 64
+K: 16
+dropout: 0.1
+lr: 0.001
+weight_decay: 0.0001
+batch_size: 256
+max_epochs: 30
+patience: 5
+seeds: [0]        # 1 semilla: v-hat no es el modelo de la RQ (se declara)

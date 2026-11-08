@@ -1,0 +1,245 @@
+{
+ "_instrucciones": "TODO estudiantes: para cada battle_id, abrir el log (o el replay) y anotar A MANO los lideres y las reservas reveladas de cada lado, como nombres de especie tal como aparecen en la hoja OTS (showteam). No copiar la salida del parser. Cambiar 'checked_by' por su nombre al terminar. Muestra: 20 batallas de TRAIN (10 con algun lado v<2, 5 con formas/Illusion, 5 completas), random.Random(0).",
+ "replays": [
+  {
+   "battle_id": "gen9championsvgc2026regma-2600332302",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2603150904",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2582324954",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2592844104",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2609013851",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2607740363",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2601719957",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2595402332",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2607402404",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2598104334",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2613018719",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2590301729",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2607232747",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2586608861",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2593440874",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2586869687",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2616896171",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2584873981",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2610909705",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2592081121",
+   "checked_by": "TODO",
+   "p1": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   },
+   "p2": {
+    "leads": "TODO",
+    "revealed": "TODO"
+   }
+  }
+ ]
+}

@@ -1,0 +1,6 @@
+# Python 3.14.6 (probado). Showdown local fijado a cameronangliss/pokemon-showdown@913da36.
+poke-env @ git+https://github.com/cameronangliss/poke-env.git@379a04628e42b2a2c94790c0788204b652f7ae1b
+numpy==2.5.4
+torch==2.15.0
+pytest==9.2.0
+PyYAML==6.0.3

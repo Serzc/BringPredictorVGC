@@ -1,0 +1,14 @@
+# Arena y baselines (plan v2 §5, §8). BORRADOR asistido por IA.
+concurrency: 8
+block: 8               # batallas por bloque (un par, una orientacion)
+auto_mega: true        # pi_b = SimpleHeuristicsPlayer + megaevolucionar en cuanto se pueda (Fase 0)
+a8_rule: role_spread   # A8: role_spread (por defecto) | random (reparto de la Fase 0)
+max_turns: 50          # tope: pasado el tope la recompensa es 0 (empate)
+timeout_s: 600         # bloque colgado > 10 min: se descarta y se sigue (F2)
+opponent: usage        # rival de la RQ: Usage estocastico
+n_per_pair_val: 200    # batallas por par en val (mitad por orientacion)
+n_per_pair_test: 1000  # SOLO Fase 5 (corrida preregistrada)
+# checkpoints (rellenar con las carpetas de results/ de cada corrida)
+bc_ckpt: null
+vhat_ckpt: null
+agent_ckpt: null

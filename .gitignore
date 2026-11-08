@@ -1,2 +1,12 @@
 /data
 /results/phase0
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+# checkpoints de modelos (pesados); los CSV y meta.json de results/ se deciden a mano
+*.pt
+/results/rl_20261107-150017_s0
+/results/arena_*
+
