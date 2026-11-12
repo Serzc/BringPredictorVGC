@@ -1,0 +1,12 @@
+# Arena y baselines (plan v2 §5, §8). BORRADOR asistido por IA.
+port: 8000             # Showdown local; main.py lo arranca y lo apaga
+startup_timeout_s: 60  # si Showdown no abre el puerto en este tiempo, se aborta
+concurrency: 8
+block: 8               # batallas por bloque (un par, una orientacion)
+auto_mega: true        # pi_b = SimpleHeuristicsPlayer + megaevolucionar en cuanto se pueda (Fase 0)
+a8_rule: role_spread   # A8: role_spread (por defecto) | random (reparto de la Fase 0)
+max_turns: 50          # pasado el tope, la recompensa es 0 (empate)
+timeout_s: 600         # bloque colgado > 10 min: se descarta y se sigue
+n_per_pair_val: 200    # batallas por par en val (mitad por orientacion)
+n_per_pair_test: 1000  # SOLO en la corrida final de test
+seeds: [0, 1, 2]       # semillas de evaluacion (muestreo de Random y del rival Usage)

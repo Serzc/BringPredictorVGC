@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA.** Copia en limpio de `Research/ETAPA2_PLAN_v2.md` §4 (y v1 §4) con lo que el código implementa. Sergio y José tienen que poder defender cada punto; si cambian algo, anoten el porqué.
+> **BORRADOR asistido por IA.** Copia en limpio de `Research/ETAPA2_PLAN_v2.md` §4 (y v1 §4) con lo que el código implementa (actualizado el 11-11-2026: modelos lineales en numpy, nuevo layout `src/`). Sergio y José tienen que poder defender cada punto; si cambian algo, anoten el porqué.
 
 # MDP del bring (Track C)
 
@@ -12,18 +12,18 @@ $s_t = \langle c_{self}, c_{opp}, m, \ell_t \rangle$
 
 | Componente | Qué es | Dónde está en el código |
 |---|---|---|
-| $c_{self}, c_{opp}$ | Las dos hojas OTS: por Pokémon, especie (con forma), objeto, habilidad y 4 movimientos | `parsing/showdown.py`, `features/encode.py` |
-| $m$ | Por Pokémon: $P(\text{líder})$, $P(\text{reserva})$, $P(\text{fuera})$ de su especie y $\log(1+n)/\log(1+n_{max})$. **Solo train**, cuentas fraccionales sobre $\mathcal C(o)$, suavizado hacia 2/6 con 5 pseudo-cuentas, **leave-one-out por batalla** para los registros de train | `data/usage.py` |
-| $\ell_t$ | Par líder ya elegido ($\varnothing$ en $t=0$) | implícito en la cabeza de reservas (`models/policy.py`) |
+| $c_{self}, c_{opp}$ | Las dos hojas OTS: por Pokémon, especie (con forma), objeto, habilidad y 4 movimientos | `src/dataPrep/parser.py`; features por Pokémon en `src/utils/features.py` (tasas de uso, ventaja de tipos, one-hot de especie) |
+| $m$ | Por Pokémon: $P(\text{líder})$, $P(\text{reserva})$, $P(\text{fuera})$ de su especie y $\log(1+n)/\log(1+n_{max})$. **Solo train**, cuentas fraccionales sobre $\mathcal C(o)$, suavizado hacia 2/6 con 5 pseudo-cuentas, **leave-one-out por batalla** para los registros de train | `src/utils/usage.py` (en las features entran como log-tasas) |
+| $\ell_t$ | Par líder ya elegido ($\varnothing$ en $t=0$) | implícito en el paso 2: solo se puntúan pares de reservas entre los 4 que quedan (`src/models/bc.py`) |
 
-Tokens no vistos en train → `<UNK>` (cobertura en val/test en `results/dataset/dataset_stats.md`).
+Tokens no vistos en train → `<UNK>` (cobertura en val/test en `src/output/dataset/dataset_stats.json`).
 
 ## Información que se le niega al agente
 
 | Información | Por qué |
 |---|---|
 | Bring del rival en este episodio | Es simultáneo y oculto; dárselo sería target leakage |
-| Número de revelados, duración, turnos | Proxies del resultado: los ganadores revelan completo el 73,6 % de las veces y los perdedores el 94,7 % (medido en `results/dataset/`) |
+| Número de revelados, duración, turnos | Proxies del resultado: los ganadores revelan completo el 73,6 % de las veces y los perdedores el 94,7 % (medido en `src/output/dataset/`) |
 | Resultado, rating, nombres | Leakage o ajeno a la decisión |
 | Historial Bo3 | Mantiene el MDP markoviano; limitación declarada |
 | Stats y naturaleza reales | OTS no los trae: se imputan con A8, igual para ambos lados |
@@ -32,8 +32,8 @@ Tokens no vistos en train → `<UNK>` (cobertura en val/test en `results/dataset
 ## Acciones
 
 - $t=0$: $a_0$ = par líder, 15 opciones. $t=1$: $a_1$ = reservas entre los 4 restantes, 6 opciones.
-- $|B| = 15 \times 6 = 90$ (`brings.py`; test: exactamente 90 brings distintos, legales y alcanzables).
-- Política autorregresiva $\pi(b|s) = \pi(a_0|s)\,\pi(a_1|s,a_0)$ con máscara de legalidad por Pokémon.
+- $|B| = 15 \times 6 = 90$ (`src/utils/brings.py`; test: exactamente 90 brings distintos, legales y alcanzables).
+- Política autorregresiva $\pi(b|s) = \pi(a_0|s)\,\pi(a_1|s,a_0)$ con máscara de legalidad por Pokémon. Desde el 11-11-2026 es una **softmax lineal**: logit de un par = suma de `theta_L · phi_x` (líderes) o `theta_R · phi_x` (reservas) de sus dos Pokémon. Limitación: no modela sinergias entre Pokémon (ver `docs/EXPLICACION_ETAPA2.md` §3).
 - En Showdown: `/team abcd` (dos líderes y dos reservas en posiciones de la hoja).
 
 ## Transiciones
@@ -44,7 +44,7 @@ Tokens no vistos en train → `<UNK>` (cobertura en val/test en `results/dataset
 ## Recompensa
 
 - $R(s_0,a_0)=0$.
-- $R(s_1,a_1) = +1$ si gana, $-1$ si pierde, $0$ si empata o pasa de **50 turnos** (`max_turns` en `configs/arena.yaml`). Se reporta cuántas veces pasa (`draws`, `capped`).
+- $R(s_1,a_1) = +1$ si gana, $-1$ si pierde, $0$ si empata o pasa de **50 turnos** (`max_turns` en `src/config/arena.yaml`). Se reporta cuántas veces pasa (`draws`, `capped`).
 - Un bloque de batallas colgado más de 10 min se descarta y se cuenta (`timeouts`). No cuenta como derrota.
 - **Sin reward shaping.**
 

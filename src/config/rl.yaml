@@ -1,0 +1,12 @@
+# Agente RL: REINFORCE + baseline (retorno medio del batch) + entropia + KL a rho_BC. Plan v2 §7.5.
+# BORRADOR asistido por IA. Valores iniciales; ajustar solo con val, nunca con test.
+lr: 0.003             # paso de Adam
+grad_clip: 1.0        # tope de la norma del gradiente
+batch_size: 128       # episodios (batallas) por actualizacion
+beta_H: 0.01          # peso del bonus de entropia (barrido {0, 0.01})
+beta_KL: 0.1          # peso de KL(pi || rho_BC), fijo
+episodes: 50000       # presupuesto por semilla (provisional)
+eval_every: 2000      # episodios entre evaluaciones en val
+val_pairs: 10
+val_n_per_pair: 200
+seeds: [0, 1, 2]

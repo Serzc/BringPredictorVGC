@@ -1,12 +1,20 @@
-/data
-/results/phase0
 .venv/
 node_modules/
 __pycache__/
 *.pyc
 .pytest_cache/
-# checkpoints de modelos (pesados); los CSV y meta.json de results/ se deciden a mano
-*.pt
-/results/rl_20261107-150017_s0
-/results/arena_*
 
+# datos: el log set y los registros limpios se regeneran con main.py setup / data
+/src/dataset/raw/
+/src/dataset/clean/
+# src/dataset/splits/ SI se versiona (pares congelados)
+
+# salidas: solo se versionan los resumenes .md (y lo que ya estaba versionado en legacy_torch/)
+/src/output/**
+!/src/output/**/
+!/src/output/**/*.md
+/src/output/.test_run_done
+*.pt
+*.npz
+# corridas smoke: no son resultados
+/src/output/smoke_*

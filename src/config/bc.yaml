@@ -1,0 +1,9 @@
+# rho_BC: politica lineal softmax entrenada con la perdida de etiquetas parciales (7). Plan v2 §7.3.
+# BORRADOR asistido por IA.
+lr: 0.01                   # paso de Adam
+l2: 0.0001                 # penalizacion L2 sobre los pesos (regularizacion)
+batch_size: 256            # ejemplos (player-brings) por actualizacion
+max_epochs: 40
+patience: 5                # epocas sin mejorar en val antes de parar
+early_stop_metric: nll_C1  # se elige con |C|=1 (la perdida baja trivialmente con |C| grande)
+seeds: [0, 1, 2]

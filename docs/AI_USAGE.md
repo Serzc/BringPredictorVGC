@@ -2,30 +2,33 @@
 
 # Uso de IA en la Etapa 2
 
-Herramienta: Claude Code (Anthropic), modelo Claude Opus 5.5, ejecutado localmente por Sergio a través de un "Worker Agent" (07-11-2026).
+Herramienta: Claude Code (Anthropic), modelo Claude Opus 5.5, ejecutado localmente por Sergio a través de un "Worker Agent". Sesiones: 07-11-2026 (implementación con torch) y 11-11-2026 (reestructuración: numpy + pandas, layout ``src/``).
 
 ## Qué se hizo con IA
 
-| Pieza | Qué hizo la IA | Qué deben verificar a mano los estudiantes | Estado |
+| Pieza (rutas actuales) | Qué hizo la IA | Qué deben verificar a mano los estudiantes | Estado |
 |---|---|---|---|
-| `Research/ETAPA2_PLAN.md`, `ETAPA2_PLAN_v2.md` | Borrador del plan | Cada decisión (A1–A9) y que la puedan defender | revisión pendiente |
-| `scripts/extract_teams.py`, `scripts/phase0_arena_spikes.py` | Spikes de la Fase 0; hallazgo de que `SimpleHeuristicsPlayer` nunca megaevoluciona (`auto_mega`) | Decidir si se adopta `auto_mega` | pendiente |
-| `src/bringvgc/parsing/showdown.py` | Parser del protocolo de Showdown, normalización de formas/apodos/Illusion | **Anotar a mano los 20 replays** de `tests/fixtures/annotated_replays.json` (hoy todos en TODO; el test se salta). Hasta entonces el parser **no está verificado** | **pendiente** |
-| `data/splits.py`, `configs/data.yaml` | Partición por serie, cortes temporales, selección de pares, filtro de equipos vistos, validador | Revisar los cortes y el criterio de "equipo visto" (conjunto de especies) | pendiente |
-| `data/usage.py` | Usage stats con cuentas fraccionales y LOO por batalla | Revisar el suavizado (5 pseudo-cuentas hacia 2/6) | pendiente |
-| `features/spreads.py` (A8) | Regla `role_spread` | Decidir la regla (BORRADOR, decisión a defender) | pendiente |
-| `models/encoder.py`, `models/policy.py`, `train/bc.py` | DeepSets, política autorregresiva, pérdida (7), early stopping por $|\mathcal C|=1$ | Revisar arquitectura e hiperparámetros | pendiente |
-| `models/vhat.py`, `train/vhat.py` | $\hat v$ (8)–(11) y su entrenamiento | **José**: revisar y hacer commit | pendiente |
-| `baselines/methods.py` | Random, Usage, Tipos, BC, Planificador-$\hat v$ | **José** revisa el Planificador; Tipos: revisar la regla | pendiente |
-| `sim/arena.py`, `sim/validate.py`, `scripts/validate_teams.js` | Arena con `MethodPlayer`, tope de turnos, timeouts, validador de equipos | Revisar que el bring se respeta (Fase 0 lo comprobó con `bring_ok = 1.0`) | pendiente |
-| `train/rl.py` | REINFORCE + baseline de media + entropía + KL, checkpoints y reanudación | **José**: revisar el bucle y hacer commit | pendiente |
-| `eval/stats.py`, `eval/aggregate.py`, `eval/diagnostics.py` | Wilson, intervalo t, diferencia pareada, regla del 55 % | Comprobar los cuantiles t y la regla | pendiente |
-| `tests/` | Tests unitarios y de leakage | Que cubren lo que dicen cubrir | pendiente |
-| `docs/MDP.md`, `docs/EXPERIMENTS.md`, `README.md`, `docs/EXPLICACION_ETAPA2.md` | Borradores de documentación | Reescribir con sus palabras lo que vaya al artículo | pendiente |
-| Corridas piloto (`results/`, 07-11-2026) | Las lanzó la IA: 1 semilla, solo val | Son smoke tests; **no citar como resultados** | — |
+| `Research/ETAPA2_PLAN.md`, `ETAPA2_PLAN_v2.md` | Borrador del plan | Cada decisión (A1–A9) y que la puedan defender. **Desde el 11-11 el plan no coincide con el código** (dice DeepSets/torch) | revisión pendiente |
+| Reestructuración del 11-11-2026 | Layout `src/` (`main.py`, `config/`, `dataPrep/`, `utils/`, `models/`, `baselines/`, `sim/`, `training/`, `tests/`), port de torch a numpy, `main.py` que arranca y apaga Showdown | Que el layout y los comandos les sirvan; reporte en `src/output/RESTRUCTURE_REPORT.md` | pendiente |
+| `src/scripts/fase0/` | Spikes de la Fase 0; hallazgo de que `SimpleHeuristicsPlayer` nunca megaevoluciona (`auto_mega`) | Decidir si se adopta `auto_mega` | pendiente |
+| `src/dataPrep/parser.py` | Parser del protocolo de Showdown; normalización de formas, apodos e Illusion | **Anotar a mano los 20 replays** de `src/tests/fixtures/annotated_replays.json` (todos en TODO; el test se salta). Hasta entonces el parser **no está verificado** | **pendiente** |
+| `src/dataPrep/particion.py`, `construir.py`, `src/config/data.yaml` | Partición por serie, cortes temporales, selección de pares (congelados), filtro de equipos vistos, validador | Revisar los cortes y el criterio de "equipo visto" (conjunto de especies) | pendiente |
+| `src/utils/usage.py` | Usage stats con cuentas fraccionales y LOO por batalla | Revisar el suavizado (5 pseudo-cuentas hacia 2/6) | pendiente |
+| `src/utils/spreads.py` (A8) | Regla `role_spread` | Decidir la regla (BORRADOR, decisión a defender) | pendiente |
+| `src/utils/features.py` | Features hechas a mano (log-tasas de uso, ventaja de tipos, one-hot de especie) | Que cada feature tenga sentido y no filtre el resultado | pendiente |
+| `src/models/bc.py`, `src/training/entrenar_bc.py` | Política softmax lineal autorregresiva, pérdida (7) y su gradiente a mano, Adam, early stopping por $\|\mathcal C\|=1$ | Revisar la derivación del gradiente (`gradiente_ponderado`) y los hiperparámetros | pendiente |
+| `src/models/vhat.py`, `src/training/entrenar_vhat.py` | $\hat v$ como regresión logística antisimétrica, verosimilitud (11) y su gradiente | **José**: revisar y hacer commit | pendiente |
+| `src/models/base.py`, `src/baselines/` | Clase padre `MetodoBring`; Random, Usage, Tipos, Planificador-$\hat v$ | **José** revisa el Planificador; Tipos: revisar la regla | pendiente |
+| `src/sim/` (`showdown.py`, `jugador.py`, `arena.py`), `src/scripts/validate_teams.js` | Arranque/apagado de Showdown, `BringPlayer` con `auto_mega`, tope de turnos, timeouts | Que el bring se respeta (`src/tests/test_arena.py`, pasa) | pendiente |
+| `src/models/rl_agent.py`, `src/training/entrenar_rl.py` | REINFORCE + baseline de media + entropía + KL, con gradiente a mano | **José**: revisar el bucle y hacer commit | pendiente |
+| `src/utils/estadistica.py`, `src/training/eval/` | Wilson, intervalo t, diferencia pareada, regla del 55 %, tablas, diagnósticos | Comprobar los cuantiles t y la regla | pendiente |
+| `src/tests/` | Tests unitarios, de leakage, de gradientes (diferencias finitas), de antisimetría y SHA-256 de los pares | Que cubren lo que dicen cubrir | pendiente |
+| `docs/*.md`, `README.md` | Borradores de documentación | Reescribir con sus palabras lo que vaya al artículo | pendiente |
+| Corridas (`src/output/`) | Piloto torch del 07-11 (`legacy_torch/`, no comparable) y smoke del 11-11 (`smoke_*`) | Son smoke tests; **no citar como resultados** | — |
 
 ## Qué NO hizo la IA
 
-- No corrió nada sobre test (ni modelos ni batallas). Solo se seleccionó la lista de pares.
-- No hizo commits ni editó el artículo (`.tex`).
+- No corrió nada sobre test (ni modelos ni batallas). Solo se seleccionó la lista de pares el 07-11. El paso `data` calcula estadísticas descriptivas de las tres particiones (conteos, fechas, $v$), igual que antes.
+- No hizo commits ni editó el artículo (`.tex`) ni los planes de `Research/`.
 - No generó los valores esperados del test de 20 replays (se dejan en TODO a propósito).
+- No ajustó hiperparámetros mirando resultados: los valores de `src/config/*.yaml` son iniciales.

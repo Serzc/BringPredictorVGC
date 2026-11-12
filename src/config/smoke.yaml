@@ -1,0 +1,19 @@
+# Smoke test (python src/main.py all --smoke): presupuestos minimos para comprobar que todo corre.
+# Lo que sale con esto NO es un resultado. Cada seccion pisa los valores del yaml del mismo nombre.
+total_timeout_s: 1800   # tope de tiempo de toda la corrida smoke; pasado esto se aborta
+bc:
+  max_epochs: 3
+  seeds: [0]
+vhat:
+  max_epochs: 2
+arena:
+  n_per_pair_val: 8
+  max_pairs: 2
+  seeds: [0]
+rl:
+  episodes: 64
+  batch_size: 32
+  eval_every: 64
+  val_pairs: 2
+  val_n_per_pair: 8
+  seeds: [0]

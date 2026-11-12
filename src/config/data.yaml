@@ -1,0 +1,23 @@
+# Datos y particiones (plan v2 §6). BORRADOR asistido por IA.
+# Fuente: Hugging Face cameronangliss/vgc-battle-logs, revision fijada (la descarga la hace main.py setup).
+hf_url: "https://huggingface.co/datasets/cameronangliss/vgc-battle-logs/resolve/74f260510b1dbcaf4c42c8bf653f726b51d476ef/logs_gen9championsvgc2026regma.json"
+logs_file: logs_gen9championsvgc2026regma.json    # dentro de src/dataset/raw/
+logs_size_bytes: 49775900                          # tamano esperado; si no coincide, setup falla
+# Copia local que ya existia (se reutiliza si pesa exactamente logs_size_bytes)
+local_copy: "../Research Proyecto/data/logs_gen9championsvgc2026regma.json"   # relativa a la raiz del repo
+
+# Cortes temporales (epoch, s) por cuantiles 70/85 % de batallas, unidad = serie Bo3.
+# Calculados una vez (07-11-2026) y FIJADOS antes de mirar resultados. No moverlos.
+cut_val: 1779727876    # 2026-05-25 16:51 UTC
+cut_test: 1780624210   # 2026-06-05 01:50 UTC
+
+min_parse_success: 0.98   # la corrida falla si se parsea menos (umbral a confirmar por los estudiantes)
+usage_prior: 5.0          # suavizado de las tasas de uso hacia 2/6 (pseudo-cuentas)
+a8_rule: role_spread      # A8: regla para rellenar naturaleza y stat points
+
+# Pares congelados: ya estan en src/dataset/splits/ y NO se regeneran (setup y data solo los leen).
+pairs:
+  seed: 0
+  n_train: 200
+  n_val: 10
+  n_test: 20

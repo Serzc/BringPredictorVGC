@@ -1,10 +1,10 @@
 [project]
 name = "bringvgc"
-version = "0.2.0"
-description = "Bring predictor / RL agent for VGC Team Preview (IC-6200, TEC, Etapa 2)"
+version = "0.3.0"
+description = "Bring predictor / RL agent for VGC Team Preview (IC-6200, TEC, Etapa 2). numpy + pandas, sin torch."
 requires-python = ">=3.10"
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]
-testpaths = ["tests"]
-markers = ["arena: necesita Showdown local en el puerto 8000"]
+testpaths = ["src/tests"]
+markers = ["arena: arranca Showdown local en el puerto 8000 (se salta si no esta instalado)"]
