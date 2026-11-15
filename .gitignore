@@ -13,6 +13,8 @@ __pycache__/
 /src/output/**
 !/src/output/**/
 !/src/output/**/*.md
+!/src/output/**/meta.json
+!/src/output/**/curves.csv
 /src/output/.test_run_done
 *.pt
 *.npz

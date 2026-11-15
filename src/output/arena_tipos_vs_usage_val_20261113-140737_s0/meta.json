@@ -1,0 +1,59 @@
+{
+  "run_id": "arena_tipos_vs_usage_val_20261113-140737_s0",
+  "kind": "arena_tipos_vs_usage_val",
+  "seed": 0,
+  "smoke_test": false,
+  "config": {
+    "port": 8000,
+    "startup_timeout_s": 60,
+    "concurrency": 8,
+    "block": 8,
+    "auto_mega": true,
+    "a8_rule": "role_spread",
+    "max_turns": 50,
+    "timeout_s": 600,
+    "n_per_pair_val": 200,
+    "n_per_pair_test": 1000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "method": "tipos",
+    "opponent": "usage",
+    "pairs": "val",
+    "n_per_pair": 200,
+    "checkpoint": null,
+    "mirror": false
+  },
+  "commit": "69f044a-dirty",
+  "hardware": {
+    "os": "Windows-11-10.0.26200-SP0",
+    "cpu": "Intel(R) Core(TM) i5-10400F CPU @ 2.90GHz",
+    "cpu_count": 12,
+    "python": "3.14.6",
+    "numpy": "2.5.4",
+    "pandas": "3.1.1",
+    "poke_env": "0.15.0",
+    "showdown_commit": "913da36",
+    "host": "DESKTOP-QJKLVOF"
+  },
+  "started": "2026-11-13T14:07:39",
+  "wall_time_s": 37.35,
+  "summary": {
+    "method": "tipos",
+    "label": "tipos",
+    "opponent": "usage",
+    "pairs": "val",
+    "n_pairs": 10,
+    "battles": 2000,
+    "mean_win_rate_over_pairs": 0.594,
+    "t95_low": 0.5099399895074953,
+    "t95_high": 0.6780600104925046,
+    "sd_over_pairs": 0.1175159563633807,
+    "draws": 0,
+    "capped": 0,
+    "timeouts": 0,
+    "T_battles_per_s": 57.348
+  }
+}

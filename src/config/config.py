@@ -111,9 +111,61 @@ class Run:
                      "started": datetime.now().isoformat(timespec="seconds")}
         self.save_meta()
 
+    @classmethod
+    def reabrir(cls, carpeta: Path) -> "Run":
+        """Reabre una corrida existente (para --resume): misma carpeta, mismo run_id, mismo meta.json.
+
+        El tiempo de pared sigue sumando desde el que ya tenia; cada reanudacion queda anotada
+        en meta["resumes"] con la fecha y el commit (el codigo pudo cambiar entre medio).
+        """
+        run = cls.__new__(cls)
+        run.dir = Path(carpeta)
+        run.meta = json.loads((run.dir / "meta.json").read_text(encoding="utf-8"))
+        run.run_id = run.meta["run_id"]
+        run.t0 = time.perf_counter() - float(run.meta.get("wall_time_s", 0.0))
+        run.meta.setdefault("resumes", []).append(
+            {"at": datetime.now().isoformat(timespec="seconds"), "commit": _git_commit()})
+        return run
+
     def save_meta(self, **extra) -> None:
-        """Agrega campos al meta.json y actualiza el tiempo de pared."""
+        """Agrega campos al meta.json y actualiza el tiempo de pared (escritura atomica)."""
         self.meta.update(extra)
         self.meta["wall_time_s"] = round(time.perf_counter() - self.t0, 2)
-        (self.dir / "meta.json").write_text(json.dumps(self.meta, indent=2, ensure_ascii=False, default=str),
-                                            encoding="utf-8")
+        tmp = self.dir / "meta.json.tmp"
+        tmp.write_text(json.dumps(self.meta, indent=2, ensure_ascii=False, default=str), encoding="utf-8")
+        os.replace(tmp, self.dir / "meta.json")      # nunca queda un meta.json a medio escribir
+
+
+# ---------------------------------------------------------------------------
+# ¿Esta completa una corrida? (para saltar trabajo hecho en `main.py all` y en --resume)
+# ---------------------------------------------------------------------------
+def leer_meta(carpeta: Path) -> dict | None:
+    """meta.json de una corrida, o None si no existe o esta corrupto."""
+    try:
+        return json.loads((Path(carpeta) / "meta.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def corrida_completa(carpeta: Path) -> bool:
+    """True si la corrida termino.
+
+    Regla general: meta.json con `complete: true` (lo escriben RL y la evaluacion desde el
+    13-11-2026) o con `train_wall_s` (RL: solo se escribe al terminar).
+    Corridas anteriores a esa marca: cada paso tiene su campo que solo se escribe al final
+    (bc/vhat: `checkpoint` y el archivo existe; dataset: `n_valid`; evaluacion: `summary`
+    con batallas > 0 y per_pair.csv). Sin esto, `all` repetiria BC, v-hat y val ya hechos.
+    """
+    meta = leer_meta(carpeta)
+    if meta is None:
+        return False
+    if meta.get("complete") is True or "train_wall_s" in meta:
+        return True
+    kind = str(meta.get("kind", ""))
+    if kind in ("bc", "vhat"):
+        return "checkpoint" in meta and Path(meta["checkpoint"]).exists()
+    if kind == "dataset":
+        return "n_valid" in meta
+    if kind.startswith("arena_"):
+        return (meta.get("summary") or {}).get("battles", 0) > 0 and (Path(carpeta) / "per_pair.csv").exists()
+    return False

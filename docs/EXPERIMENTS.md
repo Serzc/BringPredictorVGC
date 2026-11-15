@@ -22,7 +22,7 @@
 | Random | 3 (muestreo) | piso |
 | Usage-argmax | determinista | baseline de literatura del survey |
 | Tipos | determinista | heurística de dominio |
-| Planificador-$\hat v$ | determinista ($\hat v$ = regresión logística antisimétrica, 1 semilla) | búsqueda con fitness aprendida (A3) |
+| Planificador-$\hat v$ | determinista ($\hat v$ = modelo bilineal antisimétrico del survey, eqs. 8-11, 1 semilla) | búsqueda con fitness aprendida (A3) |
 
 Rival en todos los casos: Usage estocástico. Evaluación del agente y de BC: greedy (argmax autorregresivo).
 

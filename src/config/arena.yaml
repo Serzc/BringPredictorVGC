@@ -7,6 +7,9 @@ auto_mega: true        # pi_b = SimpleHeuristicsPlayer + megaevolucionar en cuan
 a8_rule: role_spread   # A8: role_spread (por defecto) | random (reparto de la Fase 0)
 max_turns: 50          # pasado el tope, la recompensa es 0 (empate)
 timeout_s: 600         # bloque colgado > 10 min: se descarta y se sigue
+max_timeouts_seguidos: 2   # vigilante: tras 2 bloques descartados seguidos se reinicia Showdown
+login_timeout_s: 30        # jugadores nuevos que no entran al servidor en 30 s = bloque descartado
+limpieza_timeout_s: 30     # tope por mensaje al rendir/cerrar los jugadores viejos
 n_per_pair_val: 200    # batallas por par en val (mitad por orientacion)
 n_per_pair_test: 1000  # SOLO en la corrida final de test
 seeds: [0, 1, 2]       # semillas de evaluacion (muestreo de Random y del rival Usage)

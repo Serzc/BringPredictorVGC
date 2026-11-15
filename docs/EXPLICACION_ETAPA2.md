@@ -55,11 +55,11 @@ registros ──► estadísticas de uso (solo train) ──► baseline Usage =
 
 ## 3. Decisión: de torch a modelos lineales en numpy (11-11-2026)
 
-**Qué se decidió.** Se quitaron torch y el DeepSets. $\rho_{BC}$ y el agente RL son ahora una **softmax lineal** sobre features hechas a mano. $\hat v$ es una **regresión logística antisimétrica**. Los gradientes están escritos a mano y se comprueban contra diferencias finitas (`src/tests/test_gradients.py`).
+**Qué se decidió.** Se quitaron torch y el DeepSets. $\rho_{BC}$ y el agente RL son ahora una **softmax lineal** sobre features hechas a mano. $\hat v$ **sigue el survey (eqs. 8-11)**: modelo bilineal antisimétrico, escrito también en numpy. En una frase: *$\hat v$ sigue las eqs. (8)-(11) del survey; $\rho_{BC}$ y la política RL son lineales por decisión de proyecto.* Los gradientes están escritos a mano y se comprueban contra diferencias finitas (`src/tests/test_gradients.py`).
 
 **Por qué.**
 - **Se puede defender línea por línea.** Cada peso tiene nombre (p. ej. "especie=incineroar como líder"). La rúbrica castiga lo que no se puede justificar, y con una red eso cuesta mucho más.
-- **Hay pocos datos:** unos 9 700 ejemplos de train. En el piloto (1 semilla), BC con DeepSets quedó por debajo de Random en la arena (0,520 contra 0,545), y $\hat v$ sobreajustaba desde la época 3. La capacidad extra no se tradujo en nada medible.
+- **Hay pocos datos:** unos 9 700 ejemplos de train. En el piloto (1 semilla), BC con DeepSets quedó por debajo de Random en la arena (0,520 contra 0,545), y $\hat v$ (torch) sobreajustaba desde la época 3. La capacidad extra no se tradujo en nada medible. (Esto justifica la política lineal; $\hat v$ no se simplifica: la forma bilineal es la del survey y es lo que se defiende frente a Oblander.)
 - **La instalación es más simple:** sin torch, `pip install` pesa poco y no depende de la versión de CUDA ni de la CPU.
 - **Es rápido:** entrenar BC o $\hat v$ tarda segundos. El cuello de botella son las batallas.
 
@@ -142,7 +142,16 @@ $\rho_{BC}$ es esa política entrenada con la pérdida (7), $-\log \sum_{b\in\ma
 
 ### 4.8 $\hat v$ (`models/vhat.py`), revisión de José
 
-$\hat v(b_1,b_2) = \sigma(w \cdot x(b_1,b_2))$, donde $x$ es *"features de $b_1$ menos features de $b_2$"* (líderes y reservas por separado) más una ventaja de tipos entre los 4 de cada lado. Al no tener sesgo, al cambiar los lados el logit cambia de signo, y por eso $\hat v(b_1,b_2) + \hat v(b_2,b_1) = 1$ **exacto** (hay un test). Se entrena con la verosimilitud marginalizada (11).
+$\hat v$ es el modelo bilineal del survey (eq:bilinear, eqs. 8-10), portado de la versión torch de `d3b1d7d` a numpy:
+
+1. $\phi_x$ (vector de $d=64$ por Pokémon): se concatenan los embeddings de especie (32), objeto (16), habilidad (16) y la media de los embeddings de sus movimientos (16), y pasan por un MLP de 2 capas. **Sin features de uso.** Un token que no está en el vocabulario de *train* va a `<UNK>` (índice 1); un movimiento que falta va a `<PAD>` (0, embedding nulo).
+2. $h(b) = \mathrm{ReLU}(\beta_h + W_L \sum_{x\in L}\phi_x + W_R \sum_{x\in R}\phi_x)$ (hidden $=64$). $L$ = los 2 líderes, $R$ = las 2 reservas. Sumar dentro de cada par hace que el orden dentro del par no importe; $W_L \neq W_R$ hace que importe quién es líder y quién reserva.
+3. $f(b) = \sigma(\beta_z + W_z h(b))$, con $K=16$.
+4. $\hat v(b_1,b_2) = \sigma\!\big(f(b_1)^\top M f(b_2)\big)$ con $M = A - A^\top$. Como $M$ es antisimétrica, $\hat v(b_1,b_2) + \hat v(b_2,b_1) = 1$ **exacto** (hay un test).
+
+Se entrena con la verosimilitud marginalizada (eq:marginal, eq. 11): $\Pr(w{=}1\mid o_1,o_2)=\sum_{b_1\in\mathcal C(o_1)}\sum_{b_2\in\mathcal C(o_2)} q(b_1)q(b_2)\hat v(b_1,b_2)$, con $q$ uniforme (a lo sumo 36 términos). Regularización L2 en lugar del dropout del piloto torch. Los gradientes (14 grupos de parámetros, 39 280 en total) están a mano y se comprueban contra diferencias finitas en `test_gradients.py`. El checkpoint es `vhat_bilineal_s<seed>.npz`; cargar uno del formato logístico viejo da un error claro.
+
+**Qué es del survey y qué es decisión del proyecto.** Del survey: la forma de $h$, $f$, $\hat v$ y la verosimilitud (11). Del proyecto: cómo se construye $\phi_x$ (el survey solo dice "capa de embeddings sobre especie, movimientos, objeto y habilidad"), las dimensiones, L2 y Adam. *Alternativa descartada:* la regresión logística sobre "features de $b_1$ menos features de $b_2$" que se había puesto en la reestructura; era más simple pero no era el modelo que el survey dice usar.
 
 - La métrica principal es **team** ($q$ uniforme sobre los 90 brings): no usa nada de lo que pasó en la batalla.
 - **obs** (con los $\mathcal C(o)$ observados) está contaminada por la revelación y se reporta solo como diagnóstico.
@@ -280,7 +289,7 @@ Lo marcado ⚠ no lo han decidido ustedes todavía.
 | **Planificador-$\hat v$** | Baseline que prueba los 90 brings con $\hat v$ y elige el mejor |
 | **poke-env** | Librería de Python para conectar bots con Showdown (el fork de vgc-bench) |
 | **Preregistro** | Escribir la regla de decisión antes de ver test |
-| **Regresión logística** | Modelo lineal que da una probabilidad con $\sigma(w\cdot x)$ (aquí, $\hat v$) |
+| **Modelo bilineal antisimétrico** | $\hat v(b_1,b_2)=\sigma(f(b_1)^\top M f(b_2))$ con $M=A-A^\top$: da $\hat v(b_1,b_2)+\hat v(b_2,b_1)=1$ exacto (aquí, $\hat v$) |
 | **REINFORCE** | Gradiente de política: sube la probabilidad de las acciones que dieron más recompensa de lo esperado |
 | **Reg M-A** | El reglamento de VGC del log set (`gen9championsvgc2026regma`) |
 | **RL** | Aprendizaje por refuerzo: aprender a decidir probando y recibiendo recompensas |

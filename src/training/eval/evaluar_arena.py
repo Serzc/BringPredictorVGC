@@ -66,11 +66,14 @@ async def evaluar(arena: Arena, cod, metodo: str, pares: str, n_per_pair: int, s
     tag = f"arena_{metodo}_vs_{o.name}{'_mirror' if mirror else ''}_{pares}"
     run = Run(tag, {**cfg, "method": metodo, "opponent": o.name, "pairs": pares, "n_per_pair": n_per_pair,
                     "checkpoint": str(checkpoint) if checkpoint else None, "mirror": mirror}, seed, smoke=smoke)
+    ev0, to0 = len(arena.eventos), arena.n_timeouts          # fallos/reinicios de ESTA evaluacion
     filas = await evaluate_pairs(arena, m, o, pairs, n_per_pair, rng, greedy=True, block=cfg["block"])
     for r in filas:
         r["seed"] = seed
-    if not filas:
-        run.save_meta(summary={"method": metodo, "battles": 0, "timeouts": arena.n_timeouts})
+    eventos = arena.eventos[ev0:]
+    timeouts = arena.n_timeouts - to0
+    if not filas:   # sin batallas: no se marca completa (main.py la vuelve a intentar)
+        run.save_meta(summary={"method": metodo, "battles": 0, "timeouts": timeouts}, arena_eventos=eventos)
         return {"method": metodo, "battles": 0}
     pd.DataFrame(filas).to_csv(run.dir / "battles.csv", index=False)
     tabla = tabla_por_par(filas)
@@ -80,7 +83,9 @@ async def evaluar(arena: Arena, cod, metodo: str, pares: str, n_per_pair: int, s
                "pairs": pares, "n_pairs": len(tabla), "battles": len(filas),
                "mean_win_rate_over_pairs": media, "t95_low": lo, "t95_high": hi, "sd_over_pairs": sd,
                "draws": int(sum(r["reward"] == 0 for r in filas)), "capped": int(sum(r["capped"] for r in filas)),
-               "timeouts": arena.n_timeouts, "T_battles_per_s": round(arena.throughput, 3)}
-    run.save_meta(summary=resumen)
+               "timeouts": timeouts,
+               "reinicios_showdown": sum(e.get("tipo") == "reinicio_showdown" for e in eventos),
+               "T_battles_per_s": round(arena.throughput, 3)}
+    run.save_meta(summary=resumen, arena_eventos=eventos, complete=True)
     print({k: (round(v, 4) if isinstance(v, float) else v) for k, v in resumen.items()})
     return resumen
