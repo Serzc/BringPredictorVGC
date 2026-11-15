@@ -227,6 +227,11 @@ async def online_rl(arena, cod, smoke: bool, beta_H: float | None, force: bool =
             if resume and reanudar is None:
                 print(f"[rl] semilla {s}: --resume pero no hay corrida reanudable con esta config; empieza de cero")
             ck, _ = await entrenar(arena, cfg, acfg, s, bc_ck, smoke, reanudar=reanudar)
+        if beta_H is not None and beta_H != load_config("rl", smoke)["beta_H"]:
+            # barrido de exploracion: se compara con curves.csv; no se evalua aparte para no
+            # reemplazar la fila del agente en la tabla de val
+            print(f"[rl] semilla {s}: barrido beta_H={beta_H}, sin evaluacion final en val")
+            continue
         n = acfg["n_per_pair_val"]
         hecha_ev = evaluacion_hecha("agent", "val", s, smoke, n, ck)
         if hecha_ev and not force:
@@ -258,6 +263,16 @@ def paso_test(force: bool) -> None:
     if TEST_DONE.exists() and not force:
         raise SystemExit(f"Test ya se corrio ({TEST_DONE.read_text(encoding='utf-8').strip()}). "
                          "Repetirlo solo con --force; queda registrado y hay que reportarlo.")
+    # el agente de test es la corrida RL con la config de rl.yaml (no la del barrido de beta_H),
+    # se busca antes de marcar test para fallar sin haberlo mirado
+    from training.entrenar_rl import config_de_corrida
+    rl_cfg = load_config("rl")
+    rl_ckpts = {}
+    for s in rl_cfg["seeds"]:
+        d = corrida_hecha("rl", s, False, config_de_corrida(rl_cfg, ultimo_checkpoint("bc", s, "model.npz", False)))
+        if d is None:
+            raise SystemExit(f"No hay corrida RL completa con la config de rl.yaml para la semilla {s}")
+        rl_ckpts[s] = d / "ckpt_best_val.npz"
     # la marca se escribe ANTES de empezar: si se corta a la mitad, test igual ya se miro
     previo = TEST_DONE.read_text(encoding="utf-8") if TEST_DONE.exists() else ""
     TEST_DONE.parent.mkdir(parents=True, exist_ok=True)
@@ -271,7 +286,7 @@ def paso_test(force: bool) -> None:
 
     async def correr_test(arena, cod):
         for s in rl_seeds:
-            await evaluar(arena, cod, "agent", "test", n, s, checkpoint=ultimo_checkpoint("rl", s, "ckpt_best_val.npz", False), **kw)
+            await evaluar(arena, cod, "agent", "test", n, s, checkpoint=rl_ckpts[s], **kw)
         for s in bc_seeds:
             await evaluar(arena, cod, "bc", "test", n, s, checkpoint=ultimo_checkpoint("bc", s, "model.npz", False), **kw)
         for s in acfg["seeds"]:
@@ -283,6 +298,8 @@ def paso_test(force: bool) -> None:
     con_showdown(correr_test, smoke=False)
     guardar_tabla("test", False, "usage_argmax")         # Tabla 1
     guardar_tabla("test", False, "bc")                   # agente vs BC (¿aporto el RL?)
+    guardar_tabla("test", False, "tipos")                # agente vs Tipos (¿supera la heuristica de dominio?)
+    guardar_tabla("test", False, "random")               # agente vs Random (¿supera el piso?)
     diag = diagnosticos([ultimo_checkpoint("bc", s, "model.npz", False) for s in bc_seeds], "test", allow_test=True)
     (OUTPUT_DIR / "diagnosticos_test.json").write_text(json.dumps(diag, indent=1), encoding="utf-8")
     with open(TEST_DONE, "a", encoding="utf-8") as f:

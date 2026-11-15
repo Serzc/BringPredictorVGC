@@ -30,7 +30,9 @@ Rival en todos los casos: Usage estocástico. Evaluación del agente y de BC: gr
 
 - **Por par:** win rate con IC de Wilson al 95 % (≈ ±0,03 con $n=1000$). Los empates cuentan como no victoria y se reportan.
 - **Agregado:** el win rate de cada par se promedia sobre las semillas; sobre los **20 pares**: media e **intervalo t al 95 %** (unidad = par). Al lado: desviación estándar entre semillas.
-- **Comparaciones:** diferencia pareada por par (agente − BC, agente − Usage-argmax): media ± error estándar sobre los 20 pares.
+- **Comparaciones:** diferencia pareada por par (agente − BC, agente − Usage-argmax, agente − Tipos, agente − Random): media ± error estándar sobre los 20 pares. Cada una se guarda en `src/output/tabla_test_vs_<referencia>.md`.
+- **Agente − Tipos y agente − Random (añadidas el 14-11-2026, antes de correr test):** en val, Random (0,553) quedó por encima de Usage-argmax (0,467) y Tipos (0,594) por encima del agente (0,580). Con la misma $\pi_b$ fija, ganarle a Usage no basta para decir que el agente elige buenos brings. Estas dos comparaciones se reportan como secundarias y descriptivas: el signo de la diferencia y si su intervalo (media ± 1,96·EE) incluye el 0. No cambian la regla del §5. Si el agente no supera a Tipos, se declara como resultado y como posible explotación de $\pi_b$ (riesgo R4).
+- **Mínimo de pares:** la regla del §5 solo se aplica con los 20 pares completos. Si un par falla en la arena, se reporta, se corre otra vez y no se reemplaza. Si la desviación estándar entre pares es 0 (intervalo degenerado) y la media supera 0,55, se reporta "no concluyente" en vez de "supera" (`decision()` en `tablas.py`).
 - Código: `src/utils/estadistica.py`, `src/training/eval/tablas.py` (la regla del 55 % está en `decision()`).
 
 ## 5. Regla de decisión (preregistrada)

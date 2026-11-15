@@ -22,6 +22,8 @@ def decision(win_rates_por_par, umbral: float = 0.55) -> dict:
     m, lo, hi, sd = t_interval(win_rates_por_par)
     veredicto = ("supera el 55 %" if lo > umbral else
                  "compatible, no concluyente" if m > umbral else "se rechaza")
+    if m > umbral and not sd > 1e-12:  # sd = 0 o NaN: intervalo degenerado, no se declara "supera" (EXPERIMENTS §4)
+        veredicto = "no concluyente (intervalo degenerado)"
     return {"mean": m, "t_low": lo, "t_high": hi, "sd_pairs": sd, "n_pairs": len(win_rates_por_par),
             "verdict": veredicto}
 

@@ -5,6 +5,8 @@
 **Entrega:** Etapa 2, 45 % del proyecto, fin de la semana 10 (fecha exacta en Discord).
 **Fuentes:** `_IAR_2026S2_PY01_TrackRL.pdf` (enunciado), `Research/Pokemon AI Survey.tex` (Etapa 1), `ETAPA2_PLAN.md` (v1), resultados de la Fase 0 en `results/phase0/`.
 
+> **Actualizado el 14-11-2026:** el código final es numpy + pandas (sin torch ni DeepSets); ver §0, §7.1 y `src/output/RESTRUCTURE_REPORT.md`.
+
 > Borrador hecho con asistencia de IA. Sustituye a la v1 en alcance; la v1 queda como referencia de las justificaciones largas. Cada decisión la tienen que poder defender los dos. Si no están de acuerdo con algo, cámbienlo y anoten el porqué.
 
 ---
@@ -23,7 +25,7 @@ La v1 cubría el rubro, pero añadía muchas piezas propias (no pedidas por el e
 | Ablación $\beta_{KL}$, BC-init vs init aleatoria, feature opcional $\hat q_{opp}$ | **Se quitan** | Experimentos extra que ningún rubro pide |
 | Bootstrap jerárquico + Wilcoxon | **Se quitan** | Wilson por par (descriptivo) + intervalo t sobre los 20 pares + desviación estándar entre semillas cubre el rubro (§9.2) |
 | Calibración de $\hat v$, estratificación por arquetipo, perturbaciones controladas | **Se quitan** (calibración pasa a la Etapa 3 si sobra tiempo) | Análisis opcional |
-| Transformer de 2 capas | **DeepSets** (MLP por Pokémon + pooling + interacción) | ~9,7k ejemplos de train; más fácil de entrenar, depurar y defender |
+| Transformer de 2 capas | **Softmax lineal sobre features hechas a mano** (numpy, sin torch; DeepSets se descartó el 11-11-2026) | ~9,7k ejemplos de train; gradiente exacto verificado por diferencias finitas, sin dependencias pesadas, fácil de defender |
 | $V_\psi$ aprendido | **Media del retorno del batch** como baseline | Sigue siendo REINFORCE con baseline, sin una red más |
 | 5 semillas (BC y RL) | **3 semillas** | Mínimo del enunciado; se declara junto a A5 |
 | Barrido $\beta_H \in \{0, 0.01, 0.05\}$ | $\{0, 0.01\}$ | Basta para el análisis de exploración–explotación |
@@ -85,7 +87,7 @@ Se mantienen A1–A8 de la v1 (resumidos) y se añade A9.
 | A6 | Longitud de episodio = 2 siempre; se reporta duración en turnos como diagnóstico | La métrica pedida es trivial en este MDP |
 | A7 | La partición se hace por **serie Bo3** | 2 476 batallas en 1 245 series; partir una serie es leakage |
 | A8 | Stats y naturaleza imputados con una regla fija, igual para ambos lados | `showteam` no los trae. **Pendiente: elegir la regla** (la Fase 0 usó un reparto aleatorio temporal) |
-| A9 | **Simplificaciones de la v2:** sin Q tabular, DeepSets en vez de Transformer, baseline de media del batch, Usage sin arquetipo, 2 diagnósticos en vez de 4, un solo rival, 20 replays, sin ablaciones/bootstrap/calibración (lista completa en §0) | Alcance de un proyecto de curso de dos personas. Ninguna cambia la pregunta; las que reducen evidencia (diagnósticos, un solo rival) se declaran como limitación |
+| A9 | **Simplificaciones de la v2:** sin Q tabular, política lineal en vez de Transformer/DeepSets, baseline de media del batch, Usage sin arquetipo, 2 diagnósticos en vez de 4, un solo rival, 20 replays, sin ablaciones/bootstrap/calibración (lista completa en §0) | Alcance de un proyecto de curso de dos personas. Ninguna cambia la pregunta; las que reducen evidencia (diagnósticos, un solo rival) se declaran como limitación |
 
 **Hallazgo de la Fase 0 que también se declara:** el `SimpleHeuristicsPlayer` del fork nunca megaevoluciona. $\pi_b$ = SimpleHeuristics **+ megaevolucionar en cuanto se pueda** (`auto_mega`). Decidir si se adopta (recomendado: sí, porque sin megas Reg M-A no es representativo).
 
@@ -144,19 +146,20 @@ Cada método es una subclase de `BringPlayer` (ya existe en `scripts/phase0_aren
 
 ## 7. Modelos y entrenamiento
 
-### 7.1 Codificador (DeepSets)
-- Embedding por Pokémon $\phi_x$: especie (32), objeto (16), habilidad (16), movimientos (16, promediados), features $m_x$ → MLP a d=64.
-- Contexto del rival: pooling (media) de los 6 embeddings rivales, concatenado a cada Pokémon propio → MLP. Así cada Pokémon propio "ve" al equipo rival sin atención.
+### 7.1 Features hechas a mano (sin codificador aprendido)
+- **Cambio del 11-11-2026:** DeepSets y torch se descartaron. Todo es numpy + pandas.
+- Cada Pokémon propio se describe con un vector fijo $\phi_x$ frente al equipo rival completo (`src/utils/features.py`): log-probabilidades de líder / reserva / fuera en train, uso normalizado, ofensiva y defensa de tipos contra los 6 rivales, y one-hot de especie (`<UNK>` si no se vio en train).
+- Motivo: con ~9,7k ejemplos un modelo lineal basta para la pregunta, el gradiente se escribe a mano y se verifica (`src/tests/test_gradients.py`), y es más fácil de defender. Limitación declarada: no aprende interacciones entre Pokémon más allá de la suma por par.
 
 ### 7.2 Política autorregresiva
-- Cabeza de líderes: score por par $\text{MLP}(h_i + h_j)$, softmax sobre 15. Cabeza de reservas: condicionada al par elegido, softmax sobre 6. Máscara de legalidad.
+- Cabeza de líderes: logit del par $z_p = \sum_{x\in p}\theta_L\cdot\phi_x$, softmax sobre 15. Cabeza de reservas: $u_{p,r} = \sum_{x\in r}\theta_R\cdot\phi_x$, softmax sobre las 6 opciones con los 4 restantes. Máscara de legalidad (`src/models/bc.py`).
 - Test unitario: exactamente 90 brings alcanzables y legales.
 
 ### 7.3 $\rho_{BC}$ (pérdida 7)
 - Datos: todos los player-brings de train, los dos lados de cada batalla.
 - Pérdida $-\log \sum_{b \in \mathcal C(o)} \pi(b|s)$.
 - Usos: (i) inicialización del agente; (ii) baseline-ablación BC; (iii) predictor del bring rival para los diagnósticos (llamándolo con los argumentos invertidos).
-- Adam 1e-3, batch 256, weight decay 1e-4, dropout 0.1, ≤ 30 épocas. **Early stopping:** pérdida parcial en val **estratificada por $|\mathcal C|$** (la pérdida baja trivialmente cuando $|\mathcal C|$ es grande); se elige con la de $|\mathcal C|=1$. 3 semillas (depurar con 1).
+- Adam 0,01, L2 1e-4, ≤ 40 épocas, paciencia 5 (`src/config/bc.yaml`). **Early stopping:** pérdida parcial en val **estratificada por $|\mathcal C|$** (la pérdida baja trivialmente cuando $|\mathcal C|$ es grande); se elige con la de $|\mathcal C|=1$. 3 semillas (depurar con 1).
 
 ### 7.4 $\hat v$ (pérdida 11)
 - Forma (8)–(10), $K=16$, $M = A - A^\top$, proyecciones distintas para líderes y reservas.
@@ -177,7 +180,7 @@ $$\mathcal L(\theta) = -\mathbb E\big[(R - \bar R_{batch})\log\pi_\theta(b|s)\bi
 
 | Parámetro | Valor inicial |
 |---|---|
-| Optimizador | Adam 1e-4, clip de gradiente 1.0 |
+| Optimizador | Adam 0,003, clip de gradiente 1.0 (`src/config/rl.yaml`) |
 | Batch | 128 episodios (batallas en paralelo, concurrencia 8) |
 | $\beta_H$ | 0.01 (barrido $\{0, 0.01\}$) |
 | $\beta_{KL}$ | 0.1 (fijo) |
@@ -253,7 +256,7 @@ A 10 batallas/s ≈ 15 h; a 3/s ≈ 49 h. Si $T < 3$: recortar episodios por sem
 
 Estructura de la v1 §11, con estos cambios: sin `tabular.py` ni `tabular.yaml`; `eval/stats.py` solo con Wilson, intervalo t sobre pares y diferencia pareada; los planes viven en `Research/` (no en `docs/`); el ejemplo de `AI_USAGE.md` dice "20 replays anotados". Además:
 - `requirements.txt` con poke-env del fork **por commit hash**; Showdown fijado a `913da36`.
-- Semillas de `torch`, `numpy`, `random` y muestreo de pares desde la config. Si Showdown no se puede sembrar, declarar reproducibilidad a nivel de distribución.
+- Semillas de `numpy`, `random` y muestreo de pares desde la config. Si Showdown no se puede sembrar, declarar reproducibilidad a nivel de distribución.
 - `results/<run_id>/meta.json` con config, commit, semilla, tiempo de pared y hardware (el script de Fase 0 ya lo hace).
 - `.gitignore`: `.venv/`, `node_modules/`, `data/`.
 - Commits de los dos, ramas y PRs con revisión cruzada.
@@ -267,7 +270,7 @@ Estructura de la v1 §11, con estos cambios: sin `tabular.py` ni `tabular.yaml`;
 |---|---|---|---|
 | **0. Spikes (hecha)** | Showdown local, bring respetado, $\pi_b$ en dobles con megas, $T$ | **Hecho:** bring_ok 1,0; `auto_mega`; $T$ 17–24/s sin modelos | — |
 | **1. Datos** | Parser + `consistent_brings`, 20 replays anotados, partición por serie, pares congelados (val y test filtrados), usage stats LOO, regla A8 | Tests en verde; tabla de estadísticas del dataset; `splits/` versionado | Sergio |
-| **2. Modelos offline** | DeepSets, $\rho_{BC}$ (3 semillas), $\hat v$ (1 semilla) | NLL estratificada por $|\mathcal C|$ en val; accuracy/AUC de $\hat v$ en val | José ($\hat v$) · Sergio ($\rho_{BC}$) |
+| **2. Modelos offline** | $\rho_{BC}$ lineal (3 semillas), $\hat v$ (1 semilla) | NLL estratificada por $|\mathcal C|$ en val; accuracy/AUC de $\hat v$ en val | José ($\hat v$) · Sergio ($\rho_{BC}$) |
 | **3. Arena y baselines** | Random, Usage, Tipos, BC, Planificador; sanity checks | Usage vs Usage ≈ 50 % por par; baselines en val | Sergio (arena) · José (Planificador) |
 | **4. RL** | Piloto 1 semilla (re-medir $T$), luego 3 semillas + $\beta_H=0$ | Curvas con banda; checkpoints por val | José (entrenamiento) · Sergio (eval) |
 | **5. Test y análisis** | Test una sola vez con la regla preregistrada; diagnósticos; cualitativo; fallas | Tablas y figuras de §10 | Ambos |

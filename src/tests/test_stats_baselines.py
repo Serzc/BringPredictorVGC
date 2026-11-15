@@ -40,6 +40,7 @@ def test_decision_rule():
     assert decision([0.60] * 10 + [0.62] * 10)["verdict"] == "supera el 55 %"
     assert decision([0.40, 0.75] * 10)["verdict"] == "compatible, no concluyente"
     assert decision([0.50] * 20)["verdict"] == "se rechaza"
+    assert decision([0.60] * 20)["verdict"] == "no concluyente (intervalo degenerado)"
 
 
 def test_random_uniform_and_usage_distribution():

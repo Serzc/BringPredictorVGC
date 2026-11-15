@@ -3,242 +3,462 @@
  "replays": [
   {
    "battle_id": "gen9championsvgc2026regma-2600332302",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Garchomp",
+     "Mamoswine"
+    ],
+    "revealed": []
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Slowking-Galar",
+     "Garchomp"
+    ],
+    "revealed": [
+     "Sinistcha",
+     "Tyranitar"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2603150904",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Aerodactyl",
+     "Garchomp"
+    ],
+    "revealed": []
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Aerodactyl",
+     "Basculegion-M"
+    ],
+    "revealed": [
+     "Pelipper",
+     "Garchomp"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2582324954",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sneasler",
+     "Whimsicott"
+    ],
+    "revealed": [
+     "Glimmora"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Glimmora",
+     "Kingambit"
+    ],
+    "revealed": [
+     "Gyarados",
+     "Ninetales-Alola"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2592844104",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Floette-Eternal",
+     "Sneasler"
+    ],
+    "revealed": []
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Archaludon",
+     "Pelipper"
+    ],
+    "revealed": [
+     "Blastoise",
+     "Farigiraf"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2609013851",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Delphox",
+     "Basculegion-M"
+    ],
+    "revealed": [
+     "Weavile",
+     "Garchomp"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Charizard",
+     "Incineroar"
+    ],
+    "revealed": [
+     "Milotic"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2607740363",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Milotic",
+     "Aerodactyl"
+    ],
+    "revealed": [
+     "Sneasler",
+     "Garchomp"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Basculegion-M",
+     "Scovillain"
+    ],
+    "revealed": [
+     "Archaludon"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2601719957",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Klefki",
+     "Sharpedo"
+    ],
+    "revealed": []
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Typhlosion-Hisui",
+     "Ditto"
+    ],
+    "revealed": [
+     "Farigiraf",
+     "Drampa"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2595402332",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Palafin",
+     "Skarmory"
+    ],
+    "revealed": [
+     "Politoed"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Typhlosion-Hisui",
+     "Talonflame"
+    ],
+    "revealed": [
+     "Floette-Eternal",
+     "Garchomp"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2607402404",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Excadrill",
+     "Whimsicott"
+    ],
+    "revealed": [
+     "Blastoise"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
-   }
-  },
-  {
-   "battle_id": "gen9championsvgc2026regma-2598104334",
-   "checked_by": "TODO",
-   "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
-   },
-   "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Slowking-Galar",
+     "Mimikyu"
+    ],
+    "revealed": [
+     "Greninja",
+     "Crabominable"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2613018719",
-   "checked_by": "TODO",
+   "checked_by": "Sergio Zúñiga",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sneasler",
+     "Arcanine-Hisui"
+    ],
+    "revealed": [
+     "Blastoise",
+     "Sinistcha"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Gallade",
+     "Incineroar"
+    ],
+    "revealed": [
+     "Floette-Eternal",
+     "Sneasler"
+    ]
+   }
+  },
+  {
+   "battle_id": "gen9championsvgc2026regma-2598104334",
+   "checked_by": "José Ignacio Madriz",
+   "p1": {
+    "leads": [
+     "Archaludon",
+     "Pelipper"
+    ],
+    "revealed": []
+   },
+   "p2": {
+    "leads": [
+     "Basculegion-F",
+     "Sableye"
+    ],
+    "revealed": [
+     "Kingambit",
+     "Scovillain"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2590301729",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Ninetales-Alola",
+     "Gengar"
+    ],
+    "revealed": [
+     "Kommo-o",
+     "Incineroar"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Floette-Eternal",
+     "Whimsicott"
+    ],
+    "revealed": [
+     "Sneasler",
+     "Garchomp"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2607232747",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Garganacl",
+     "Serperior"
+    ],
+    "revealed": [
+     "Meowstic-F",
+     "Ninetales-Alola"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Dragapult",
+     "Aerodactyl"
+    ],
+    "revealed": [
+     "Lucario",
+     "Ceruledge"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2586608861",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Milotic",
+     "Sneasler"
+    ],
+    "revealed": [
+     "Ninetales-Alola",
+     "Charizard"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Whimsicott",
+     "Lopunny"
+    ],
+    "revealed": [
+     "Basculegion-M",
+     "Glimmora"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2593440874",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Whimsicott",
+     "Gengar"
+    ],
+    "revealed": [
+     "Basculegion-M",
+     "Politoed"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Garchomp",
+     "Rotom-Wash"
+    ],
+    "revealed": [
+     "Floette-Eternal",
+     "Talonflame"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2586869687",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sneasler",
+     "Archaludon"
+    ],
+    "revealed": [
+     "Pelipper",
+     "Gengar"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sinistcha",
+     "Garchomp"
+    ],
+    "revealed": [
+     "Sneasler",
+     "Basculegion-M"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2616896171",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Dragonite",
+     "Maushold-Three"
+    ],
+    "revealed": [
+     "Basculegion-M",
+     "Garchomp"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Archaludon",
+     "Aerodactyl"
+    ],
+    "revealed": [
+     "Tinkaton",
+     "Milotic"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2584873981",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Incineroar",
+     "Ceruledge"
+    ],
+    "revealed": [
+     "Starmie",
+     "Aerodactyl"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Aegislash",
+     "Hydreigon"
+    ],
+    "revealed": [
+     "Steelix",
+     "Meowstic-M"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2610909705",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Gardevoir",
+     "Sneasler"
+    ],
+    "revealed": [
+     "Kingambit",
+     "Garchomp"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Pelipper",
+     "Archaludon"
+    ],
+    "revealed": [
+     "Gengar",
+     "Meowscarada"
+    ]
    }
   },
   {
    "battle_id": "gen9championsvgc2026regma-2592081121",
-   "checked_by": "TODO",
+   "checked_by": "José Ignacio Madriz",
    "p1": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sneasler",
+     "Incineroar"
+    ],
+    "revealed": [
+     "Garchomp",
+     "Charizard"
+    ]
    },
    "p2": {
-    "leads": "TODO",
-    "revealed": "TODO"
+    "leads": [
+     "Sylveon",
+     "Aerodactyl"
+    ],
+    "revealed": [
+     "Delphox",
+     "Garchomp"
+    ]
    }
   }
  ]

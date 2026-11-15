@@ -1,5 +1,7 @@
 # Etapa 2: plan de implementación (BringPredictorVGC)
 
+> **Nota 14-11-2026:** esta v1 es histórica. Manda la v2 (`ETAPA2_PLAN_v2.md`); el código usa una política lineal en numpy, no Transformer, DeepSets ni torch.
+
 **Proyecto:** *The state of ML in Pokémon: the benefits of a bring predictor*. Track C (Aprendizaje por refuerzo)
 **Equipo:** Sergio Zúñiga Castillo · José Ignacio Madriz Ortiz
 **Entrega:** Etapa 2, 45 % del proyecto. Fecha: la que esté publicada en Discord.
