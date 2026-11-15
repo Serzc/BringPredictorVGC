@@ -1,8 +1,12 @@
-% BORRADOR asistido por IA (14-11-2026). Secciones de Etapa 2 para "Pokemon AI Survey.tex".
-% Revisar, reescribir con palabras propias y pegar despues de la seccion de formulacion.
-% Los numeros de TEST estan en \TODO{}: llenarlos solo despues de "python src/main.py test".
-% Fuentes: Research/ETAPA2_PLAN_v2.md, docs/EXPERIMENTS.md, docs/MDP.md, src/output/tabla_val_*.md.
-\newcommand{\TODO}[1]{\textbf{[TODO: #1]}}
+% BORRADOR asistido por IA (version final de contenido, 15-11-2026). Secciones de Etapa 2 para "Pokemon AI Survey.tex".
+% Fuente de todos los numeros: docs/RESULTADOS_ETAPA2.md (y src/output/tabla_test_vs_*.md, diagnosticos_test.json, curves.csv).
+%
+% NOTAS PARA JOSE (borrar antes de entregar):
+% 1. Reescribir con palabras propias: el curso exige aporte demostrable de los estudiantes.
+% 2. Pegar despues de la seccion de formulacion del survey. Las etiquetas eq:consistent, eq:partial, eq:bilinear y eq:marginal ya existen ahi.
+% 3. Verificar que \cite{angliss2026} es la clave del dataset en el .bib (no se comprobo). El curso pide BibTeX (CLAUDE.md del curso).
+% 4. No exagerar las conclusiones: ver la seccion 7 de docs/RESULTADOS_ETAPA2.md (que se puede y que no se puede afirmar).
+% 5. La tabla de Oblander (0.664 / 0.730) solo se cita con la salvedad de que no es comparable.
 
 \section{Methodology}
 
@@ -12,13 +16,14 @@ We use the public battle logs of \cite{angliss2026} for the Gen 9 Champions VGC 
 To avoid leakage, the data are split by date and by Bo3 series (a series never crosses splits):
 train (4{,}831 battles, 11-04 to 25-05-2026), validation (1{,}036, 25-05 to 05-06) and test (1{,}035, 05-06 to 20-06).
 For evaluation we freeze 10 validation and 20 test team pairs; no team (species set) in validation or test appears in train,
-and test shares no team with validation. Test is read only once (Sec.~\ref{sec:exp}).
+and test shares no team with validation. The parser was checked against 20 hand-annotated training replays
+(leads and revealed reserves), with full agreement. Test was evaluated exactly once, after the protocol was committed.
 
 \subsection{Decision problem}
 Each player chooses a bring $b=(p,r)$: a lead pair $p$ (15 options) and a reserve pair $r$ from the remaining four (6 options),
 for 90 brings. We model the choice as a two-step episode with terminal reward $R\in\{0,1\}$ (win) and $\gamma=1$;
 the in-battle policy $\pi_b$ is a fixed heuristic, identical for both sides and all methods
-(\texttt{SimpleHeuristicsPlayer} with automatic Mega Evolution, because the fork's player never Mega Evolves).
+(\texttt{SimpleHeuristicsPlayer} with automatic Mega Evolution, because the original player never Mega Evolves).
 Logs only reveal the leads and the Pokémon that entered, so the true bring is known up to the consistent set
 $\mathcal C(o)$ of Eq.~\eqref{eq:consistent}.
 
@@ -48,7 +53,7 @@ methods (DQN, A2C) add no benefit and we use neither a replay buffer nor a targe
 The KL term is meant to keep the agent close to human brings and limit exploitation of $\pi_b$.
 Training runs on the 200 train pairs against a stochastic Usage rival in Pokémon Showdown,
 50{,}000 episodes per seed, 3 seeds, $\beta_H=0.01$, $\beta_{KL}=0.1$, Adam $\eta=0.003$ with gradient clipping at 1.
-The checkpoint is selected by validation win rate.
+The checkpoint is selected by validation win rate and evaluated greedily.
 
 \subsection{Baselines}
 Random (uniform over legal brings), Usage-argmax (most frequent train bring, the literature baseline),
@@ -63,40 +68,91 @@ Every method plays the stochastic Usage rival on each pair for 1{,}000 battles (
 and report the mean with a $t$ 95\% interval (unit = pair) and the standard deviation across seeds.
 The preregistered rule (committed before test) says the agent \emph{beats 55\%} only if the lower bound of the
 $t$ interval over the 20 test pairs exceeds 0.55; if only the mean does, the result is \emph{compatible but not conclusive}.
-Paired differences against BC, Usage-argmax, Tipos and Random are reported as secondary comparisons.
+Paired differences against BC, Usage-argmax, Tipos and Random are reported as secondary, descriptive comparisons.
+All 12 test evaluations completed (20{,}000 battles each, no draws or timeouts).
 
-\subsection{Validation results}
+\subsection{Main result}
 \begin{table}[t]
 \centering
-\caption{Validation win rate against stochastic Usage (10 pairs, 200 battles each).}
-\begin{tabular}{lc}
+\caption{Test win rate against stochastic Usage (20 unseen team pairs, 1{,}000 battles each).}
+\label{tab:test}
+\begin{tabular}{lccc}
 \hline
-Method & Win rate \\
+Method & Seeds & Win rate & $t_{95}$ over pairs \\
 \hline
-RL agent (3 seeds) & $0.580\pm0.020$ ($t_{95}$: 0.504--0.657) \\
-Tipos & 0.594 \\
-Random & 0.553 \\
-Planner-$\hat v$ & 0.542 \\
-BC (3 seeds) & 0.484 \\
-Usage-argmax & 0.467 \\
+RL agent & 3 & \textbf{0.595} & 0.561--0.629 \\
+BC & 3 & 0.561 & 0.520--0.603 \\
+Tipos & 1 & 0.561 & 0.517--0.606 \\
+Usage-argmax & 1 & 0.531 & 0.480--0.581 \\
+Planner-$\hat v$ & 1 & 0.506 & 0.463--0.550 \\
+Random & 3 & 0.492 & 0.455--0.528 \\
 \hline
 \end{tabular}
 \end{table}
-RL improves on BC by about 0.10 in all three seeds, with $\mathrm{KL}(\pi_\theta\|\rho_{BC})$ between 0.01 and 0.10
-and entropy falling from 4.2 to 4.0. On validation the agent is compatible with the 55\% threshold but not conclusive.
-$\hat v$ reaches 0.548 accuracy and 0.571 AUC on validation; these are not directly comparable with
-Oblander's 0.664 / 0.730, because the data, format and labels differ.
-BC predicts the human lead pair 16\% of the time (chance 6.67\%).
+The agent wins 59.5\% of its battles against Usage on unseen team pairs, with a lower $t$ bound of 0.561, so it
+\emph{beats 55\%} under the preregistered rule (Table~\ref{tab:test}). Results are stable across seeds
+(standard deviation 0.013).
 
-\subsection{Test results}
-\TODO{Tabla 1 de \texttt{src/output/tabla\_test\_vs\_usage\_argmax.md}, diferencias de \texttt{tabla\_test\_vs\_bc/tipos/random.md}, veredicto de la regla, diagnosticos de \texttt{diagnosticos\_test.json}.}
+\begin{table}[t]
+\centering
+\caption{Paired differences on the 20 test pairs (agent minus reference), mean $\pm$ standard error.}
+\label{tab:diff}
+\begin{tabular}{lcc}
+\hline
+Reference & Difference & 95\% interval ($1.96\,\mathrm{SE}$) \\
+\hline
+Random & $+0.103\pm0.024$ & $+0.057$ to $+0.149$ \\
+Usage-argmax & $+0.065\pm0.030$ & $+0.006$ to $+0.123$ \\
+BC & $+0.034\pm0.017$ & $+0.000$ to $+0.067$ \\
+Tipos & $+0.034\pm0.021$ & $-0.007$ to $+0.074$ \\
+\hline
+\end{tabular}
+\end{table}
+The agent is clearly better than Random and better than Usage-argmax (Table~\ref{tab:diff}).
+RL adds about 3.4 points over its BC initialisation, but this gain is at the edge of what 20 pairs can resolve:
+the interval only just excludes zero, and with a $t_{19}$ multiplier it includes it.
+The agent is not distinguishable from the type-matchup heuristic, and BC and Tipos are equal ($+0.000\pm0.031$).
+The planner falls below BC ($-0.055\pm0.035$): with validation accuracy 0.548 and AUC 0.571, $\hat v$ is too weak to
+act as a fitness function. These $\hat v$ figures are not directly comparable with Oblander's 0.664 / 0.730, because
+the data, format and labels differ.
+
+\subsection{Predicting human brings}
+On the 2{,}070 player brings in test, $\rho_{BC}$ predicts the exact lead pair 14.4\% of the time (chance 6.67\%)
+and a full bring consistent with the observation 4.6\% of the time (chance 1.11\%), with negligible variation
+across seeds. Behaviour cloning captures part of the human choice, but most brings remain unpredicted.
 
 \subsection{Exploration and exploitation}
-\TODO{Curvas de win rate en val con $\beta_H\in\{0,0.01\}$ a 15k episodios (\texttt{curves.csv}).}
+We compared $\beta_H=0.01$ (3 seeds) with $\beta_H=0$ (seed 0) on the validation curves.
+At about 15k episodes, validation win rate was 0.539 with $\beta_H=0.01$ and 0.525 with $\beta_H=0$ for the same seed;
+the best checkpoints reached 0.616 and 0.623. One validation evaluation has a standard error of about 0.04, so neither
+difference is measurable. Policy entropy was almost identical (4.14 vs.\ 4.12 at 15k, about 4.0 at the end, against a
+maximum of $\ln 90\approx4.50$): at this weight the entropy bonus is small next to the policy gradient and the KL term,
+and the policy stays broad during training even though it is evaluated greedily.
+$\mathrm{KL}(\pi_\theta\|\rho_{BC})$ grew from about 0.02 at 15k to 0.09--0.11 at 50k, so the agent drifts only
+moderately from the human prior.
 
-\subsection{Discussion and limitations}
-Under a fixed $\pi_b$, Usage-argmax scores below Random. This is a distribution shift: human brings were chosen for
-human play, not for the heuristic player. Beating 55\% against Usage therefore does not by itself show that the agent
-picks good brings, and on validation the agent does not beat the Tipos heuristic. The agent may be exploiting
-weaknesses of $\pi_b$; Etapa 3 re-evaluates it with a second in-battle policy (MaxBasePower).
-Other limitations: a single rival, a linear policy, three seeds, and 20 test pairs.
+\subsection{Discussion}
+On validation (10 pairs), Usage-argmax scored below Random (0.467 vs.\ 0.553), which suggested that human brings
+transfer poorly to the heuristic player. This did not replicate on test (0.531 vs.\ 0.492), so we treat it as noise
+from the small validation set rather than as evidence of distribution shift. Absolute levels also moved between
+splits (BC rose from 0.484 to 0.561), which is why we rely on paired differences on the same pairs.
+
+The main result answers the research question under a strong condition: both sides use the same fixed in-battle
+policy $\pi_b$. A bring that wins under $\pi_b$ may exploit its weaknesses instead of being good in human play, and
+the KL penalty only partly guards against this. The fact that a simple type-matchup heuristic performs as well as
+the agent points the same way: much of the measurable advantage may come from type coverage that $\pi_b$ uses well.
+Etapa 3 re-evaluates the agent with a second in-battle policy (MaxBasePower) to test this.
+
+\subsection{Limitations}
+A single in-battle policy and a single rival; a linear policy with additive interactions; three seeds and 20 test
+pairs; deterministic baselines evaluated once; checkpoint selection on validation; an exploration sweep with one seed;
+and diagnostics that measure imitation of human brings rather than the agent's quality.
+
+\section{Conclusions}
+Under a fixed heuristic battle policy, a REINFORCE agent initialised from behaviour cloning selects brings that win
+59.5\% of battles against a usage-based rival on unseen teams, meeting the preregistered 55\% threshold.
+It clearly outperforms random and usage-based brings, improves modestly and only marginally over its behaviour-cloning
+initialisation, and does not outperform a simple type-matchup heuristic. A learned win-probability model of the
+survey's bilinear form was not accurate enough to plan with. The next stage tests whether these brings remain good
+under a different battle policy, which is the condition for claiming that the agent learned good brings rather than
+weaknesses of the simulator's heuristic.
