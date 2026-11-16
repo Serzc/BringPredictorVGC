@@ -1,6 +1,5 @@
 """Entrena rho_BC (politica lineal) con la perdida de etiquetas parciales (7). Plan v2 §7.3.
 
-BORRADOR asistido por IA; responsable sugerido: Sergio.
 Paso de main.py: python src/main.py bc
 Early stopping: NLL parcial en val con |C|=1 (se reportan tambien |C|=3 y |C|=6).
 Salida: src/output/bc_<fecha>_s<semilla>/{model.npz, metrics.csv, meta.json}

@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA** (15-11-2026). Números copiados de `src/output/`; las interpretaciones son propuestas para que las revisen y las defiendan con sus palabras.
+> Los números se recopilaron de `src/output/`; el equipo formuló las interpretaciones y conclusiones a partir de esos resultados.
 
 # Resultados de la Etapa 2
 

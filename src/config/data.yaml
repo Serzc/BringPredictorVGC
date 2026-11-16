@@ -1,4 +1,4 @@
-# Datos y particiones (plan v2 §6). BORRADOR asistido por IA.
+# Datos y particiones (plan v2 §6).
 # Fuente: Hugging Face cameronangliss/vgc-battle-logs, revision fijada (la descarga la hace main.py setup).
 hf_url: "https://huggingface.co/datasets/cameronangliss/vgc-battle-logs/resolve/74f260510b1dbcaf4c42c8bf653f726b51d476ef/logs_gen9championsvgc2026regma.json"
 logs_file: logs_gen9championsvgc2026regma.json    # dentro de src/dataset/raw/

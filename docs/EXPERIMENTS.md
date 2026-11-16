@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA.** Preregistro informal (plan v2 §9). Revisarlo, ajustarlo y **hacer commit antes de correr test**. El commit con fecha es la evidencia del preregistro.
+> Protocolo preregistrado en el commit `2e7afb3`, antes de la corrida final de test.
 
 # Experimentos y regla de decisión
 

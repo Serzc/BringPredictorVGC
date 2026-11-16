@@ -1,6 +1,5 @@
 """Arena robusta (13-11-2026): limpieza al colgarse un bloque, vigilante que reinicia Showdown
-y reinicio que nunca mata un proceso ajeno. BORRADOR asistido por IA.
-
+y reinicio que nunca mata un proceso ajeno.
 No necesitan Showdown: los jugadores son falsos (no abren websockets) y subprocess esta simulado.
 Los mensajes de limpieza corren en el hilo real de poke-env (POKE_LOOP), como en una corrida de verdad.
 """

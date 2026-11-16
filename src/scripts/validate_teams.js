@@ -1,5 +1,5 @@
 // Valida equipos packed (uno por linea en stdin) con el TeamValidator del Showdown fijado.
-// BORRADOR asistido por IA. Uso: node scripts/validate_teams.js <ruta a pokemon-showdown> < teams.txt
+// Uso: node scripts/validate_teams.js <ruta a pokemon-showdown> < teams.txt
 // Salida: una linea por equipo, "OK" o la lista de problemas en JSON.
 const path = require('path');
 const sd = path.join(process.argv[2], 'dist', 'sim');

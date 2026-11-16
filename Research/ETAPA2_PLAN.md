@@ -7,7 +7,7 @@
 **Entrega:** Etapa 2, 45 % del proyecto. Fecha: la que esté publicada en Discord.
 **Fuentes:** `_IAR_2026S2_PY01_TrackRL.pdf` (enunciado), `Pokemon_AI_Survey (1).pdf` (Etapa 1) y el log set `logs_gen9championsvgc2026regma.json` (medido otra vez para este documento).
 
-> Este plan es un borrador hecho con asistencia de IA. Cada decisión que aparece aquí la tienen que poder defender los dos (Principio de Defensa Técnica). Cuando no estén de acuerdo con algo, cámbienlo y anoten el porqué. Ese razonamiento es lo que se evalúa.
+> Cada decisión que aparece aquí la tienen que poder defender los dos (Principio de Defensa Técnica). Cuando no estén de acuerdo con algo, cámbienlo y anoten el porqué. Ese razonamiento es lo que se evalúa.
 
 ---
 

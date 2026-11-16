@@ -1,6 +1,6 @@
 """Extracts teams (packed format) from the Reg M-A log set for testing.
 
-BORRADOR (asistido por IA). Imputacion TEMPORAL de stats para el smoke test:
+Imputacion TEMPORAL de stats para el smoke test:
 los logs traen vacios naturaleza y stat points (A8 del plan). Aqui se rellena
 cada Pokemon con una naturaleza neutra y un reparto aleatorio de stat points.
 La regla definitiva de A8 la deciden y justifican Sergio y Jose.

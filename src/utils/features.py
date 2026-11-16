@@ -1,6 +1,5 @@
 """Features hechas a mano del estado s = <c_self, c_opp, m> (plan v2 §4). Reemplazan al DeepSets.
 
-BORRADOR asistido por IA.
 Por cada Pokemon x de mi equipo, frente al equipo rival completo:
 
 | feature                 | que mide                                                                 |

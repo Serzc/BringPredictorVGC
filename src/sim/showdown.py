@@ -1,6 +1,6 @@
 """Arranca, reinicia y apaga el servidor local de Showdown (cameronangliss/pokemon-showdown @ 913da36).
 
-BORRADOR asistido por IA (reinicio y logs con fecha agregados el 13-11-2026).
+Incluye reinicio vigilado y logs con fecha agregados el 13-11-2026.
 Uso:
     with servidor_showdown(puerto=8000):
         ... batallas ...

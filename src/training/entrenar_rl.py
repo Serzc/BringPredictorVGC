@@ -1,7 +1,6 @@
 """Bucle de entrenamiento del agente RL contra batallas reales (plan v2 §7.5).
 
-BORRADOR asistido por IA; responsable sugerido: Jose (bucle de entrenamiento).
-Reanudacion (--resume) agregada el 13-11-2026, tambien BORRADOR: revisar.
+Reanudacion (--resume) agregada el 13-11-2026.
 Paso de main.py: python src/main.py rl [--seed N] [--resume]   (Showdown lo arranca main.py)
 
 - Episodio = una batalla real (H=2: lideres y reservas, gamma=1). On-policy, sin replay buffer.

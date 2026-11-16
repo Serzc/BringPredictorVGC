@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA (Worker Agent, Claude Sonnet 5.5, 12-11-2026).** Reporte del parche de $\hat v$: de regresión logística a el modelo bilineal del survey (eq:bilinear, eq:marginal, eqs. 8-11), en numpy. No se hizo ningún commit ni push.
+> Reporte del parche de $\hat v$: de regresión logística a el modelo bilineal del survey (eq:bilinear, eq:marginal, eqs. 8-11), en numpy. No se hizo ningún commit ni push.
 
 # Parche de $\hat v$ bilineal (numpy)
 
@@ -31,7 +31,7 @@ Los archivos `docs/MDP.md` y `README.md` no se tocaron: solo mencionan $\hat v$ 
 | | Antes (reporte de la reestructura, $\hat v$ logístico) | Ahora (bilineal) |
 |---|---|---|
 | passed | 42 | **47** |
-| skipped | 20 (`test_parser_annotated.py`, anotación a mano pendiente) | 20 (los mismos) |
+| skipped | 20 (`test_parser_annotated.py`, anotaciones manuales aún no completas en esa ejecución) | 20 (los mismos) |
 
 Los tests de $\hat v$ que reemplazaron a los logísticos:
 

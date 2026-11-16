@@ -1,6 +1,5 @@
 """Carga de los registros limpios, con la barrera de test.
 
-BORRADOR asistido por IA.
 Cualquier codigo que quiera leer registros de test tiene que pedir allow_test=True,
 y eso solo lo hace la corrida final (python src/main.py test).
 """

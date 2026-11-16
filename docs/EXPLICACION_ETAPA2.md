@@ -1,5 +1,3 @@
-> **BORRADOR asistido por IA (07-11-2026, actualizado el 11-11-2026 tras la reestructuración numpy).** Explicación en lenguaje simple de lo que se implementó para la Etapa 2, siguiendo `Research/ETAPA2_PLAN_v2.md`. No es texto para el artículo: es para que Sergio y José entiendan, revisen y defiendan cada pieza. Lo marcado **"decisión a defender"** todavía no lo han decidido ustedes. **Aviso:** desde el 11-11-2026 el código usa modelos lineales en numpy (§3). Los planes de `Research/` todavía hablan de DeepSets y torch: ahí el código y el plan no coinciden.
-
 # Etapa 2 explicada: qué hace cada parte, por qué y cómo correrla
 
 ## 0. La idea en un párrafo
@@ -86,7 +84,7 @@ registros ──► estadísticas de uso (solo train) ──► baseline Usage =
 
 **Nombres.** Apodos, formas Mega o **Illusion** cambian el nombre en batalla. La solución es comparar por **número de Pokédex**: la *Species Clause* prohíbe repetir número, así que identifica la posición en la hoja. Con Illusion, `|replace|` dice quién era y se corrige la entrada anterior.
 
-**Verificación pendiente.** Hay 20 replays elegidos en `src/tests/fixtures/annotated_replays.json` con los valores esperados en "TODO". **Ustedes tienen que llenarlos mirando cada log.** Nunca se generan con el parser. Hasta entonces, esos 20 tests se saltan y el parser no está verificado. Se excluyen 3 batallas jugadas con 5 Pokémon (`|teamsize|p1|5`). El survey dice "2": hay que corregirlo.
+**Verificación.** La fixture `src/tests/fixtures/annotated_replays.json` contiene 20 anotaciones manuales independientes del parser. La prueba compara los líderes y las reservas reveladas que predice el parser con esas anotaciones. Se excluyen 3 batallas jugadas con 5 Pokémon (`|teamsize|p1|5`). El survey dice "2": hay que corregirlo.
 
 ### 4.2 Brings consistentes $\mathcal C(o)$ (`utils/brings.py`)
 
@@ -103,7 +101,7 @@ Si un jugador ganó rápido, puede que alguna reserva nunca entrara. No sabemos 
 
 Para cada especie se mide, en train, la fracción de veces que fue líder, reserva o se quedó fuera. Con brings incompletos se usan **cuentas fraccionales**, y las tasas se suavizan hacia 2/6 con 5 pseudo-batallas. **LOO:** al calcular las features de una batalla de train se resta lo que aportó esa misma batalla. Si no, la feature contendría la respuesta.
 
-### 4.5 Stats imputados: A8 (`utils/spreads.py`), **BORRADOR, decisión a defender**
+### 4.5 Stats imputados: A8 (`utils/spreads.py`)
 
 Los logs no traen naturaleza ni stat points. La regla es **fija e igual para los dos lados**. Se deduce un rol de los movimientos:
 

@@ -1,6 +1,5 @@
 """Baseline Planificador-v-hat: busqueda exhaustiva sobre los 90 brings con fitness aprendida (A3).
 
-BORRADOR asistido por IA; responsable sugerido: Jose.
 bring = argmax_{b1} sum_{b2} q_Usage(b2) * v-hat(b1, b2)
 donde q_Usage es la distribucion del baseline Usage estocastico para el rival.
 

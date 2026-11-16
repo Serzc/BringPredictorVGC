@@ -1,6 +1,5 @@
 """Tablas multi-semilla y regla preregistrada del 55 % (plan v2 §9.2, docs/EXPERIMENTS.md).
 
-BORRADOR asistido por IA.
 Por metodo: el win rate de cada par se promedia sobre semillas -> media e intervalo t
 sobre pares (unidad = par), desviacion estandar entre semillas (de la media sobre pares)
 y diferencia pareada contra una referencia. Lee src/output/arena_*/per_pair.csv.

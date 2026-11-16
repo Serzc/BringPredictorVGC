@@ -1,5 +1,4 @@
 # v-hat bilineal antisimetrico (eqs. 8-11 del survey) con la verosimilitud marginalizada (11). Plan v2 §7.4.
-# BORRADOR asistido por IA.
 d: 64                      # tamano de phi_x: el vector que describe a cada Pokemon (especie, objeto, habilidad, movimientos)
 hidden: 64                 # tamano de h(b), la capa entre los Pokemon del bring y f(b)
 K: 16                      # tamano de f(b); M = A - A^T es K x K

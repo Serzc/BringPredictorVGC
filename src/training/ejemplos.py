@@ -1,6 +1,5 @@
 """Ejemplos supervisados a partir de los registros limpios (para rho_BC y v-hat).
 
-BORRADOR asistido por IA.
 """
 from __future__ import annotations
 

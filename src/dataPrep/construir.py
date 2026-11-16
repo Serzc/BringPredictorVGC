@@ -1,6 +1,6 @@
 """Paso 'data': lee los logs, limpia, particiona por serie y calcula usage stats y vocabulario.
 
-BORRADOR asistido por IA. Se llama con: python src/main.py data   (o dentro de 'all').
+Se llama con: python src/main.py data   (o dentro de 'all').
 Entradas: src/dataset/raw/<logs>.json (lo descarga 'setup').
 Salidas:
   src/dataset/clean/   records.pkl, usage.json, vocab.json          (no versionado, se regenera)

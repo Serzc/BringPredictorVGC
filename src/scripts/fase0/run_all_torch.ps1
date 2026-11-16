@@ -1,4 +1,4 @@
-# Reproduce todas las tablas de la Etapa 2 (plan v2 §9, §11). BORRADOR asistido por IA.
+# Reproduce todas las tablas de la Etapa 2 (plan v2 §9, §11).
 # Una linea por bloque/tabla. Requiere: .venv con requirements.txt, Showdown 913da36 en el puerto 8000
 #   (cd ..\vgc-bench\pokemon-showdown; node pokemon-showdown start --no-security)
 # y el log set (configs/data.yaml o la variable BRINGVGC_LOGS).

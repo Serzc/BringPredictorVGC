@@ -1,4 +1,4 @@
-"""A8: imputacion de naturaleza y stat points. BORRADOR, decision a defender.
+"""A8: imputacion de naturaleza y stat points.
 
 Los logs (showteam) traen vacios naturaleza y stat points. Regla fija, igual
 para ambos lados y todos los metodos (config `a8_rule`):

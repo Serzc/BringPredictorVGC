@@ -1,6 +1,6 @@
 """Fase 0: spikes del arena (b, c, d del plan, ETAPA2_PLAN.md §12).
 
-BORRADOR (asistido por IA). Revisarlo y defenderlo antes de hacer commit.
+Revisarlo y defenderlo antes de hacer commit.
 
 Que comprueba:
   (b) BringPlayer.teampreview: el servidor respeta el bring enviado. Los 2

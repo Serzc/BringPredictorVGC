@@ -1,5 +1,5 @@
 # Agente RL: REINFORCE + baseline (retorno medio del batch) + entropia + KL a rho_BC. Plan v2 §7.5.
-# BORRADOR asistido por IA. Valores iniciales; ajustar solo con val, nunca con test.
+# Valores iniciales; ajustar solo con val, nunca con test.
 lr: 0.003             # paso de Adam
 grad_clip: 1.0        # tope de la norma del gradiente
 batch_size: 128       # episodios (batallas) por actualizacion

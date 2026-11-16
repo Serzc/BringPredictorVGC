@@ -1,7 +1,6 @@
 # Arreglo de la arena colgada, `--resume` y corridas por semilla (13-11-2026)
 
-> **BORRADOR asistido por IA** (Claude Code, Worker Agent). Todo el código nuevo está marcado como BORRADOR.
-> Sergio y José tienen que poder defender cada decisión; por eso cada cambio trae su razón y la alternativa descartada.
+> Este informe documenta los cambios de robustez de la arena, reanudación de entrenamiento y ejecución por semilla.
 
 ## 1. Qué pasó y causa
 
@@ -87,8 +86,9 @@ menos de 1 s, y con 600 el vigilante tarda hasta 20 min en reiniciar Showdown en
     - `rl_reanudable` exige la misma config;
     - `online_rl` salta la semilla hecha, `--seed` corre solo esa y `--force` la repite;
     - 3 combinaciones de CLI no permitidas.
-- **Suite completa: 61 pasan, 21 se saltan** (antes: 46 y 21). Los 21 saltados son los mismos de antes:
-  `test_arena.py`, porque el 8000 está ocupado, y los 20 replays anotados pendientes.
+- **Suite completa en esa ejecución: 61 pasan, 21 se saltan** (antes: 46 y 21). En ese momento,
+  los saltos incluían `test_arena.py` porque el puerto 8000 estaba ocupado y las 20 anotaciones del parser.
+  Las anotaciones se completaron posteriormente; el informe de resultados registra que las 20 comparaciones pasaron.
 - **Garantía más débil con Showdown real.** Los resultados de las batallas no se pueden sembrar. Una corrida
   reanudada sigue la misma distribución que una sin cortes, pero no la misma secuencia de batallas, y los
   episodios posteriores al último checkpoint se vuelven a jugar con resultados nuevos. Lo exacto (bit a bit)

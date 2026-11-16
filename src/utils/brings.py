@@ -1,6 +1,5 @@
 """Espacio de acciones: 90 brings = C(6,2) pares lideres x C(4,2) pares de reservas (eq. 2 del survey).
 
-BORRADOR asistido por IA.
 Indices de Pokemon 0..5 = posicion en la hoja OTS (mismo orden que el /team de Showdown).
 bring_id = par_lider * 6 + par_reserva, con par_reserva contado sobre los 4 restantes
 (en orden creciente). Asi el paso 1 (lideres, 15 opciones) y el paso 2 (reservas,

@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA (Worker Agent, Claude Opus 5.5, 11-11-2026).** Reporte de la reestructuración de BringPredictorVGC a numpy + pandas. No se hizo ningún commit ni push.
+> Reporte de la reestructuración de BringPredictorVGC a numpy + pandas. No se hizo ningún commit ni push.
 
 # Reestructuración de BringPredictorVGC (numpy + pandas, sin torch)
 
@@ -110,7 +110,7 @@ En `--smoke` hay un tope de tiempo total de 1 800 s: la arena lo revisa antes de
 ### pytest (`python -m pytest`, `.venv` del dueño, Python 3.14.6)
 
 **42 passed, 20 skipped.**
-- Los 20 skips son `test_parser_annotated.py`: "anotacion a mano pendiente (estudiantes)". Las fixtures siguen en TODO y no se generaron con el parser.
+- En esa ejecucion, las 20 comprobaciones de `test_parser_annotated.py` se omitieron porque las anotaciones manuales aun no estaban completas. Posteriormente se completaron; `docs/RESULTADOS_ETAPA2.md` registra que las 20 comparaciones pasaron.
 - Los tests de leakage corren y pasan sobre los datos reales:
   - ninguna serie aparece en dos particiones;
   - ningún equipo de val o test aparece en train;

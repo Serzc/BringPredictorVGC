@@ -1,6 +1,5 @@
 """Baseline Usage: trae lo que la poblacion suele traer con esas especies.
 
-BORRADOR asistido por IA.
 puntaje(b) = sum_{x en L} log P(lider|x) + sum_{x en R} log P(reserva|x) + sum_{x fuera} log P(fuera|x)
 con tasas por especie medidas solo en train (cuentas fraccionales sobre C(o)), sin arquetipo (A9).
 

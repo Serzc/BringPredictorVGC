@@ -1,6 +1,6 @@
 """Particion temporal por serie Bo3 (A7) y pares congelados (plan v2 §6).
 
-BORRADOR asistido por IA. Los pares de src/dataset/splits/ ya estan congelados: select_pairs()
+Los pares de src/dataset/splits/ ya estan congelados: select_pairs()
 solo se usa si faltan (nunca se regeneran a proposito; un test compara su SHA-256).
 
 Unidad = serie Bo3 (o batalla suelta). La serie se asigna por el timestamp de
@@ -85,7 +85,7 @@ def select_pairs(records: list[dict], part: dict[str, str], n_train: int, n_val:
     for r in records:
         if r["valid"] and (legal is None or (r["packed"][0] in legal and r["packed"][1] in legal)):
             by[part[r["battle_id"]]].append(r)
-    # El filtro de leakage usa TODOS los registros de train (tambien los de equipos ilegales)
+    # El filtro de leakage usa todos los registros de train (tambien los de equipos ilegales)
     all_train = [r for r in records if r["valid"] and part[r["battle_id"]] == "train"]
     train_keys = {team_key(t) for r in all_train for t in r["teams"]}
     train_pairs_seen = {frozenset((team_key(r["teams"][0]), team_key(r["teams"][1])))

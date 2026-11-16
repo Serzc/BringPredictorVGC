@@ -1,6 +1,6 @@
 """v-hat: evaluador de matchup bilineal antisimetrico, eqs. (8)-(11) del survey (numpy, gradientes a mano).
 
-BORRADOR asistido por IA (version numpy, port de la version torch de d3b1d7d); responsable sugerido: Jose.
+Version NumPy del modelo bilineal, migrada desde la implementacion Torch de `d3b1d7d`.
 Solo lo usan el Planificador-v-hat (baselines/planner.py) y los diagnosticos. NUNCA es la
 recompensa del agente RL (A2): evaluar con lo mismo que se optimiza seria circular.
 

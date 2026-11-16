@@ -1,5 +1,4 @@
-"""Punto de entrada unico de BringPredictorVGC (Etapa 2). BORRADOR asistido por IA.
-
+"""Punto de entrada unico de BringPredictorVGC (Etapa 2).
 Comandos (desde la raiz del repo):
   python src/main.py setup            descarga el log set, prepara vgc-bench/Showdown (una vez)
   python src/main.py all [--smoke]    data -> bc -> vhat -> val -> rl -> tablas   (arranca y apaga Showdown)

@@ -1,6 +1,6 @@
 """Rutas, configuracion, semillas y meta.json de cada corrida.
 
-BORRADOR asistido por IA. Cada corrida escribe src/output/<run_id>/meta.json con
+Cada corrida escribe src/output/<run_id>/meta.json con
 la configuracion usada, el commit, la semilla, el tiempo de pared y el hardware
 (requisito del curso: reproducibilidad y evidencia de cada numero).
 """

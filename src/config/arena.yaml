@@ -1,4 +1,4 @@
-# Arena y baselines (plan v2 §5, §8). BORRADOR asistido por IA.
+# Arena y baselines (plan v2 §5, §8).
 port: 8000             # Showdown local; main.py lo arranca y lo apaga
 startup_timeout_s: 60  # si Showdown no abre el puerto en este tiempo, se aborta
 concurrency: 8

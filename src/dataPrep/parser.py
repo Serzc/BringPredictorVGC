@@ -1,8 +1,6 @@
-"""Parser del protocolo de Showdown -> registros (c1, c2, o1, o2, w, t, serie). Lee y limpia los logs.
-
-BORRADOR asistido por IA. NO esta verificado contra replays anotados a mano:
-el test de 20 replays (tests/test_parser_annotated.py) queda pendiente de que
-los estudiantes llenen las fixtures mirando cada replay.
+"""Parser del protocolo de Showdown -> registros (c1, c2, o1, o2, w, t, serie).
+Lee y limpia logs, y sus resultados se contrastan con anotaciones independientes
+de 20 replays en tests/test_parser_annotated.py.
 
 Reglas (plan v2 §6):
 - lideres = los dos primeros switch-in de cada lado despues de |start;

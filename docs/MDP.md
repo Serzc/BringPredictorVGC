@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA.** Copia en limpio de `Research/ETAPA2_PLAN_v2.md` §4 (y v1 §4) con lo que el código implementa (actualizado el 11-11-2026: modelos lineales en numpy, nuevo layout `src/`). Sergio y José tienen que poder defender cada punto; si cambian algo, anoten el porqué.
+> Formulación del MDP implementado en el proyecto, basada en `Research/ETAPA2_PLAN_v2.md` §4 y actualizada para los modelos lineales en NumPy.
 
 # MDP del bring (Track C)
 

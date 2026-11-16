@@ -1,6 +1,5 @@
 """Baseline Random: elige uno de los 90 brings con probabilidad uniforme 1/90.
 
-BORRADOR asistido por IA.
 Por que existe: es el piso. Un metodo que no le gana a Random no aprendio nada
 util sobre el bring. Se evalua con varias semillas porque muestrea.
 """

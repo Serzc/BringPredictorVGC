@@ -1,6 +1,5 @@
 """Validacion de equipos con el TeamValidator del Showdown fijado (via node).
 
-BORRADOR asistido por IA.
 Motivo: hay equipos en los logs que el validador rechaza (p. ej. movimientos que la
 especie no aprende); si uno llega a la arena, el reto se rechaza y el bloque se cuelga.
 Solo hace falta cuando se eligen pares nuevos (los congelados ya estan validados).

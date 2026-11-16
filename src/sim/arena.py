@@ -1,6 +1,6 @@
 """Arena: batallas reales en el Showdown local con poke-env (fork vgc-bench). Plan v2 §5, §8, §9.
 
-BORRADOR asistido por IA; responsable sugerido: Sergio. Limpieza y vigilante agregados el 13-11-2026.
+Limpieza de jugadores colgados y reinicio vigilado de Showdown agregados el 13-11-2026.
 - Dos BringPlayer (sim/jugador.py): el del metodo ("m") y el del rival ("o").
 - Un bloque = un par de equipos, una orientacion, k batallas concurrentes.
 - Recompensa: +1 gana / -1 pierde; 0 si empate o si pasa del tope de turnos.

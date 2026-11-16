@@ -1,6 +1,6 @@
 """Politica lineal softmax autorregresiva y rho_BC (imitacion con etiquetas parciales, perdida 7).
 
-BORRADOR asistido por IA (plan v2 §7.2-7.3, version numpy: DeepSets descartado).
+Implementacion NumPy descrita en el plan v2 §7.2-7.3; se sustituyo DeepSets.
 
 Modelo (phi = features por Pokemon de utils/features.py, forma (6, F)):
   puntaje_lider(x)   = theta_L . phi_x          puntaje_reserva(x) = theta_R . phi_x

@@ -1,5 +1,4 @@
-"""Estadistica de la evaluacion (plan v2 §9.2). BORRADOR asistido por IA.
-
+"""Estadistica de la evaluacion (plan v2 §9.2).
 - Wilson 95 % por par (descriptivo).
 - Intervalo t 95 % sobre pares (unidad = par; el win rate del par se promedia
   sobre semillas antes).

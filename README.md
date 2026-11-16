@@ -1,5 +1,3 @@
-> **BORRADOR asistido por IA.** Solo instalación y ejecución. La explicación está en `docs/EXPLICACION_ETAPA2.md`; el MDP en `docs/MDP.md`; el protocolo en `docs/EXPERIMENTS.md`.
-
 # BringPredictorVGC: Etapa 2
 
 IC-6200 Inteligencia Artificial (TEC), Track C. Sergio Zúñiga Castillo · José Ignacio Madriz Ortiz.
@@ -22,7 +20,7 @@ python src/main.py test      # corrida FINAL en test: una sola vez (después de 
 
 - `python src/main.py all --smoke`: lo mismo con presupuestos mínimos (unos 70 s). **No es un resultado.**
 - Pasos sueltos: `python src/main.py data | bc | vhat | val | rl [--beta-H 0] | tablas`.
-- Tests: `python -m pytest` (61 tests; los 20 del parser contra replays anotados se saltan hasta que se anoten a mano).
+- Tests: `python -m pytest` (incluye 20 comparaciones del parser contra replays anotados a mano).
 - `main.py test` no corre dos veces: si ya existe `src/output/.test_run_done`, se niega. Con `--force` repite la corrida y lo deja registrado.
 - El puerto 8000 tiene que estar libre: `main.py` arranca su propio Showdown y lo apaga al terminar, aunque haya error.
 

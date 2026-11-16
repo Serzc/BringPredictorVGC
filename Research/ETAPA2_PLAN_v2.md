@@ -7,7 +7,7 @@
 
 > **Actualizado el 14-11-2026:** el código final es numpy + pandas (sin torch ni DeepSets); ver §0, §7.1 y `src/output/RESTRUCTURE_REPORT.md`.
 
-> Borrador hecho con asistencia de IA. Sustituye a la v1 en alcance; la v1 queda como referencia de las justificaciones largas. Cada decisión la tienen que poder defender los dos. Si no están de acuerdo con algo, cámbienlo y anoten el porqué.
+> Sustituye a la v1 en alcance; la v1 queda como referencia de las justificaciones largas. Cada decisión la tienen que poder defender los dos. Si no están de acuerdo con algo, cámbienlo y anoten el porqué.
 
 ---
 

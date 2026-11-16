@@ -1,6 +1,5 @@
 """Evalua un metodo de bring contra un rival en los pares congelados (plan v2 §8, §9).
 
-BORRADOR asistido por IA.
 Salida: src/output/arena_<metodo>_vs_<rival>_<pares>_<fecha>_s<semilla>/{battles.csv, per_pair.csv, meta.json}
 Los pares de test exigen allow_test=True (solo main.py test).
 """

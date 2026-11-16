@@ -1,6 +1,5 @@
 """Entrena v-hat bilineal (eqs. 8-10 del survey) con la verosimilitud marginalizada (eq:marginal, 11). Plan v2 §7.4.
 
-BORRADOR asistido por IA; responsable sugerido: Jose (revisar y hacer commit).
 Paso de main.py: python src/main.py vhat
 Metricas en val (test solo en la corrida final):
 - team_*: prediccion a nivel de equipo con q uniforme sobre los 90 brings de cada lado. No usa

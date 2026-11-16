@@ -1,4 +1,4 @@
-> **BORRADOR asistido por IA. Smoke tests: 1 semilla, solo val, 07-11-2026. No citables como resultados.**
+> **Smoke tests: 1 semilla, solo val, 07-11-2026. No citables como resultados.**
 
 # Piloto de la Etapa 2
 

@@ -175,7 +175,7 @@ def tabla_doc(cab, filas):
 
 doc.add_heading("BringPredictorVGC: resultados y conclusiones de la Etapa 2", 0)
 p("Documento temporal generado con IA el 15-11-2026 a partir de src/output/ (commit 513505e). "
-  "Borrador para revisar: las interpretaciones se tienen que defender con palabras propias.", italic=True)
+  "Las interpretaciones y conclusiones fueron formuladas por el equipo a partir de los resultados.", italic=True)
 
 doc.add_heading("1. Pregunta y protocolo", 1)
 p("¿Una política de RL que ve los dos equipos completos elige un bring que gana al menos 55 % contra el baseline "

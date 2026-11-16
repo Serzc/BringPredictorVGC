@@ -1,6 +1,5 @@
 """Diagnosticos del predictor del bring rival sobre logs (plan v2 §9.4).
 
-BORRADOR asistido por IA.
 - Lead-pair exact match (piso 1/15 = 6,67 %), sobre el 100 % de las batallas.
 - Full-bring exact match permisivo: acierto si el bring predicho esta en C(o) (piso 1/90).
 Se reporta media +- desviacion estandar sobre las semillas de rho_BC.

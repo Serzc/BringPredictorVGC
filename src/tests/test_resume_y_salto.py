@@ -1,5 +1,4 @@
-"""Reanudacion de RL (--resume) y salto de trabajo ya hecho en main.py (13-11-2026). BORRADOR asistido por IA.
-
+"""Reanudacion de RL (--resume) y salto de trabajo ya hecho en main.py (13-11-2026).
 - Reanudar da EXACTAMENTE los mismos parametros (y las mismas curvas) que una corrida sin cortes,
   contra una arena falsa determinista. Con Showdown real la garantia es mas debil: los resultados de
   las batallas no se pueden sembrar, asi que una reanudacion sigue la misma distribucion, no la misma

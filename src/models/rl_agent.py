@@ -1,7 +1,5 @@
 """Agente RL: REINFORCE con baseline + bonus de entropia + KL a rho_BC (plan v2 §7.5), en numpy.
 
-BORRADOR asistido por IA; responsable sugerido: Jose (revisar y hacer commit).
-
 Perdida que se minimiza en cada actualizacion (N episodios = N batallas reales):
   L(theta) = - (1/N) sum_i (R_i - retorno_medio) * log pi(a_i | s_i)      <- REINFORCE con baseline
              - beta_H  * (1/N) sum_i H[pi(.|s_i)]                           <- explorar (no colapsar)

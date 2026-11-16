@@ -1,6 +1,5 @@
 """Estadisticas de uso por especie, solo con train y leave-one-out (plan v2 §4, §6).
 
-BORRADOR asistido por IA.
 
 Cuentas fraccionales sobre C(o): un Pokemon no lider de un registro con v<2
 cuenta como 'reserva' con la fraccion de brings de C(o) en que es reserva.

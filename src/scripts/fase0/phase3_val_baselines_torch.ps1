@@ -1,5 +1,5 @@
 # Fase 3 (piloto): sanity checks y baselines en VAL, 1 semilla, 10 pares x 200 batallas.
-# BORRADOR asistido por IA. Requiere Showdown en el puerto 8000.
+# Requiere Showdown en el puerto 8000.
 # Uso: .\scripts\phase3_val_baselines.ps1 -Bc results\bc_...\model.pt -Vhat results\vhat_...\model.pt
 param([Parameter(Mandatory=$true)][string]$Bc, [Parameter(Mandatory=$true)][string]$Vhat, [int]$Seed = 0)
 $ErrorActionPreference = "Stop"

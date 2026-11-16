@@ -1,6 +1,5 @@
 """Baseline Tipos: heuristica de dominio basada solo en la tabla de tipos.
 
-BORRADOR asistido por IA.
 puntaje(x) = media_y max_mov efectividad(mov de x, y) - media_y max_t efectividad(tipo de y, x)
 Se traen los 4 Pokemon con mejor puntaje y lideran los 2 mejores (empate -> orden de la hoja).
 

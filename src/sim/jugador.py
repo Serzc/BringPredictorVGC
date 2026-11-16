@@ -1,6 +1,6 @@
 """BringPlayer: el jugador de batalla comun pi_b. Solo el Team Preview cambia entre metodos.
 
-BORRADOR asistido por IA (de la Fase 0).
+La interfaz de selección de bring se conserva desde la Fase 0.
 - teampreview(): pregunta a `chooser` (lo pone la arena) que bring jugar y manda '/team abcd'.
 - choose_move(): SimpleHeuristicsPlayer del fork de vgc-bench + auto_mega. En la Fase 0 se
   vio que SimpleHeuristicsPlayer nunca megaevoluciona; auto_mega marca la mega en el

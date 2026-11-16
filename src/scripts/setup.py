@@ -1,6 +1,6 @@
 """Paso 'setup': deja listo todo lo que no esta en el repo. Idempotente (se puede correr varias veces).
 
-BORRADOR asistido por IA. Se llama con: python src/main.py setup
+Se llama con: python src/main.py setup
 1) Log set Reg M-A: src/dataset/raw/logs_gen9championsvgc2026regma.json
    - si ya esta y pesa exactamente lo esperado, no se toca;
    - si existe la copia local (config data.yaml: local_copy) con el tamano correcto, se copia;

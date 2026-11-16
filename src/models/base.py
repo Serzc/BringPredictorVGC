@@ -1,6 +1,5 @@
 """Clase padre MetodoBring: todo lo que elige un bring (baselines, BC, agente RL) hereda de aqui.
 
-BORRADOR asistido por IA.
 Asi la arena trata a todos igual: le pide a cada metodo una distribucion sobre
 los 90 brings con probs(mi_equipo, equipo_rival) y elige con elegir(...).
 La politica de batalla pi_b es la misma para todos (sim/jugador.py); el metodo
