@@ -18,5 +18,13 @@ __pycache__/
 /src/output/.test_run_done
 *.pt
 *.npz
+# pesos finales: los que se evaluaron en test y los que usa src/demo.py (unos 34 KB cada uno)
+!/src/output/rl_20261113-141045_s0/ckpt_best_val.npz
+!/src/output/rl_20261113-202239_s1/ckpt_best_val.npz
+!/src/output/rl_20261114-130136_s2/ckpt_best_val.npz
+!/src/output/bc_20261113-140240_s0/model.npz
+!/src/output/bc_20261113-140247_s1/model.npz
+!/src/output/bc_20261113-140254_s2/model.npz
+!/src/output/vhat_20261113-140301_s0/vhat_bilineal_s0.npz
 # corridas smoke: no son resultados
 /src/output/smoke_*
