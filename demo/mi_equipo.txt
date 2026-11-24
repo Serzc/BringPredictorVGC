@@ -1,0 +1,47 @@
+Aerodactyl @ Focus Sash
+Ability: Unnerve
+Level: 50
+- Rock Slide
+- Dual Wingbeat
+- Tailwind
+- Protect
+
+Garchomp @ Sitrus Berry
+Ability: Rough Skin
+Level: 50
+- Protect
+- Dragon Claw
+- Rock Slide
+- Earthquake
+
+Mamoswine @ Never-Melt Ice
+Ability: Oblivious
+Level: 50
+- Ice Shard
+- Icicle Crash
+- High Horsepower
+- Protect
+
+Charizard @ Charizardite Y
+Ability: Blaze
+Level: 50
+- Heat Wave
+- Solar Beam
+- Weather Ball
+- Protect
+
+Kingambit @ Chople Berry
+Ability: Defiant
+Level: 50
+- Kowtow Cleave
+- Iron Head
+- Low Kick
+- Sucker Punch
+
+Basculegion @ Spell Tag
+Ability: Adaptability
+Level: 50
+- Protect
+- Last Respects
+- Flip Turn
+- Wave Crash
